@@ -1,0 +1,23 @@
+# The NAMESPACE file is used to explicitly define which functions should be imported into the package’s namespace and
+# which functions the package exposes (i.e. exports) to other packages
+# see http://docs.renjin.org/en/latest/writing-renjin-extensions.html for details about the syntax
+
+# R imports
+import(methods)
+
+# Java classes
+importClass(se.alipsa.excelutils.ExcelReader)
+importClass(se.alipsa.excelutils.ExcelImporter)
+importClass(org.renjin.sexp.ListVector)
+
+# test stuff
+export(barf)
+
+# functional methods
+export(findRowNumber)
+export(findColumnNumber)
+export(importExcel)
+
+# OO stuff
+export(ExcelUtil)
+exportClasses(ExcelUtil)
