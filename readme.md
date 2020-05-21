@@ -9,10 +9,77 @@ Open Office spreadsheets as well soon.
 * All indexes start with 1 (as is common practice in R), e.g. sheetNumber 1 refers to the 
 first sheet in the spreadsheet and column number 1 is the first (A) column etc.
 
-### Find a row in a column
+### findRowNumber: Find a row in a column
+To find the first row where the cell value matches the cellContent parameter:  
 
+`rowNum <- findRowNumber(fileName = "df.xlsx", sheet = 1, column = 1, "Iris")`
+
+You can also reference the sheet by name:
+
+`rowNum <- findRowNumber(fileName = "df.xlsx", sheet = "theSheetName", column = 1, "Iris")`
+
+or only use names
+
+`rowNum <- findRowNumber(fileName = "df.xlsx", sheet = "theSheetName", column = "A", "Iris")`
+
+### findColumnNumber: Find a column in a row
+To find the first column where the cell value matches the cellContent parameter:  
+
+`colNum <- findColumnNumber(fileName = "df.xlsx", sheet = 1, row = 2, "carb")`
+
+You can also reference the sheet by name:
+
+`colNum <- findColumnNumber("df.xlsx", "project-dashboard", 2, "carb")`
+
+The return value of findColumnNumber is an Integer with the matching row index
+or 0 if no such cell was found.
+
+### columnIndex and columnName: Get the index number for the corresponding column name and vice versa
+Sometimes it is more convenient to refer to the column by the name e.g. A for the first column, B for the second.
+To convert an index to a name you can do:
+```r
+print(columnName(14))
+[1] "N"
+```
+
+But sometimes you want the other way around:
+
+```r
+print(columnIndex("AF"))
+[1] 32
+```
+
+### import a spreadsheet
+Reads the content of the spreadsheet and return a data.frame
+```r
+excelDf <- importExcel(
+    filePath = "df.xlsx",
+    sheet = 1,
+    startRow = 2,
+    endRow = 34,
+    startColumn = 1,
+    endColumn = 12,
+    firstRowAsColumnNames = TRUE
+  )
+```
+The resulting dataframe will read all values as character strings so you will likely need to
+massage the data efter the import to get what you want. e.g.
+
+`excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg)`
+
+In the example above, the regional setting of the excel sheet used comma as the decimal separator so we replace them with 
+dots to we can then convert them to numerics.
+
+The parameters are as follows:
+* filePath: The filePath to the excel file to import. It must be a path to file that is physically accessible. A remote url will not work.
+* sheet: The sheet index (index starting with 1) for the sheet to import. Can alternatively be the name of the sheet. Default: 1 
+* startRow: The row to start reading from. Default: 1
+* endRow: The last row to read from
+* startColumn: The column index (or name e.g. A) to start reading from. default: 1
+* endColumn: The last column index (or name) to read from.
+* firstRowAsColumnNames: If true then use the values of the first column as column names for the data.frame
 
 ## Background / motivation
-Sometimes I have problems with loading the `xlsx` package and I miss some 
+Sometimes I had problems with loading the `xlsx` package and I missed some 
 search functionality to make imports more dynamic in my R code. This is a "Renjin native"
 package that attempts to address some of those issues.

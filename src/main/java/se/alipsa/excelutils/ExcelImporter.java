@@ -14,17 +14,45 @@ import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
 public class ExcelImporter {
 
+   public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, String startColName, int endColNum, boolean firstRowAsColNames) throws Exception {
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, ExcelUtil.toColumnNumber(startColName), endColNum, firstRowAsColNames);
+   }
+
+   public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, String endColName, boolean firstRowAsColNames) throws Exception {
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, startColNum, ExcelUtil.toColumnNumber(endColName), firstRowAsColNames);
+   }
+
+   public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, ExcelUtil.toColumnNumber(startColName), ExcelUtil.toColumnNumber(endColName), firstRowAsColNames);
+   }
+
+   public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
+      File excelFile = checkFilePath(filePath);
+      int sheetNumber;
+      List<String> header = new ArrayList<>();
+
+      try (Workbook workbook = WorkbookFactory.create(excelFile)) {
+         sheetNumber = workbook.getSheetIndex(sheetName);
+         if (firstRowAsColNames) {
+            Sheet sheet = workbook.getSheet(sheetName);
+            buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
+            startRowNum = startRowNum + 1;
+         } else {
+            for (int i = 1; i <= endColNum - startColNum; i++) {
+               header.add(String.valueOf(i));
+            }
+         }
+      }
+      return importExcel(excelFile, sheetNumber, startRowNum, endRowNum, startColNum, endColNum, header);
+   }
+
    public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
       File excelFile = checkFilePath(filePath);
       List<String> header = new ArrayList<>();
       if (firstRowAsColNames) {
          try (Workbook workbook = WorkbookFactory.create(excelFile)) {
             Sheet sheet = workbook.getSheetAt(sheetNumber);
-            ValueExtractor ext = new ValueExtractor(sheet);
-            Row row = sheet.getRow(startRowNum);
-            for (int i = 0; i < endColNum - startColNum; i++) {
-               header.add(ext.getString(row, startColNum + i));
-            }
+            buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
          }
          startRowNum = startRowNum + 1;
       } else {
@@ -33,6 +61,14 @@ public class ExcelImporter {
          }
       }
       return importExcel(excelFile, sheetNumber, startRowNum, endRowNum, startColNum, endColNum, header);
+   }
+
+   private static void buildHeaderRow(int startRowNum, int startColNum, int endColNum, List<String> header, Sheet sheet) {
+      ValueExtractor ext = new ValueExtractor(sheet);
+      Row row = sheet.getRow(startRowNum);
+      for (int i = 0; i < endColNum - startColNum; i++) {
+         header.add(ext.getString(row, startColNum + i));
+      }
    }
 
    public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum,int startColNum, int endColNum, Vector colNames) throws Exception {

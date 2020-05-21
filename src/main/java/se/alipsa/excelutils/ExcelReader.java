@@ -11,7 +11,6 @@ import static se.alipsa.excelutils.FileUtil.checkFilePath;
 public class ExcelReader {
 
    static FormulaEvaluator evaluator;
-   static DataFormatter formatter = new DataFormatter();
    static Workbook workbook;
 
    private ExcelReader() {
@@ -33,7 +32,8 @@ public class ExcelReader {
    public static int findRowNum(String filePath, int sheetNumber, int colNumber, String content) throws Exception {
       try {
          setExcel(filePath);
-         int rowNum = findRowNum(sheetNumber, colNumber, content);
+         Sheet sheet = workbook.getSheetAt(sheetNumber);
+         int rowNum = findRowNum(sheet, colNumber, content);
          close();
          return rowNum;
       } catch (Exception e) {
@@ -42,8 +42,28 @@ public class ExcelReader {
       }
    }
 
-   private static int findRowNum(int sheetNumber, int colNumber, String content) {
-      Sheet sheet = workbook.getSheetAt(sheetNumber);
+   public static int findRowNum(String filePath, int sheetNumber, String colName, String content) throws Exception {
+      return findRowNum(filePath, sheetNumber, ExcelUtil.toColumnNumber(colName), content);
+   }
+
+   public static int findRowNum(String filePath, String sheetName, String colName, String content) throws Exception {
+      return findRowNum(filePath, sheetName, ExcelUtil.toColumnNumber(colName), content);
+   }
+
+   public static int findRowNum(String filePath, String sheetName, int colNumber, String content) throws Exception {
+      try {
+         setExcel(filePath);
+         Sheet sheet = workbook.getSheet(sheetName);
+         int rowNum = findRowNum(sheet, colNumber, content);
+         close();
+         return rowNum;
+      } catch (Exception e) {
+         if (workbook != null) close();
+         throw e;
+      }
+   }
+
+   private static int findRowNum(Sheet sheet, int colNumber, String content) {
       Iterator<Row> it = sheet.rowIterator();
       ValueExtractor ext = new ValueExtractor(sheet);
       int rowCount = 0;
@@ -61,12 +81,9 @@ public class ExcelReader {
 
    public static int findColNum(String filePath, int sheetNumber, int rowNumber, String content) throws Exception {
       try {
-         if (workbook == null) {
-            setExcel(filePath);
-         } else {
-            System.err.println("findColNum: workbook is not null, please do not mix OO and functional methods");
-         }
-         int colNum = findColNum(sheetNumber, rowNumber, content);
+         setExcel(filePath);
+         Sheet sheet = workbook.getSheetAt(sheetNumber);
+         int colNum = findColNum(sheet, rowNumber, content);
          close();
          return colNum;
       } catch (Exception e) {
@@ -75,9 +92,21 @@ public class ExcelReader {
       }
    }
 
-   private static int findColNum(int sheetNumber, int rowNumber, String content) {
+   public static int findColNum(String filePath, String sheetName, int rowNumber, String content) throws Exception {
+      try {
+         setExcel(filePath);
+         Sheet sheet = workbook.getSheet(sheetName);
+         int colNum = findColNum(sheet, rowNumber, content);
+         close();
+         return colNum;
+      } catch (Exception e) {
+         if (workbook != null) workbook.close();
+         throw e;
+      }
+   }
+
+   private static int findColNum(Sheet sheet, int rowNumber, String content) {
       if (content==null) return -1;
-      Sheet sheet = workbook.getSheetAt(sheetNumber);
       ValueExtractor ext = new ValueExtractor(sheet);
       Row row = sheet.getRow(rowNumber);
       int colNum = 0;

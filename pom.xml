@@ -13,7 +13,7 @@
   <!-- general information about your package -->
   <name>Spreadsheets</name>
   <description>Verious methods to read information from and write to spreadsheets. Supports xls, xlsx, and ods files</description>
-
+  <url>https://github.com/Alipsa/spreadsheets</url>
   <properties>
     <renjin.version>3.5-beta76</renjin.version>
     <maven.compiler.source>1.8</maven.compiler.source>

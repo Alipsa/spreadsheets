@@ -8,9 +8,12 @@ import(methods)
 # Java classes
 importClass(se.alipsa.excelutils.ExcelReader)
 importClass(se.alipsa.excelutils.ExcelImporter)
-importClass(org.renjin.sexp.ListVector)
+importClass(se.alipsa.excelutils.ExcelUtil)
+# importClass(org.renjin.sexp.ListVector)
 
 # functional methods
 export(findRowNumber)
 export(findColumnNumber)
 export(importExcel)
+export(columnIndex)
+export(columnName)
