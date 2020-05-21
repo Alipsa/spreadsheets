@@ -1,27 +1,14 @@
 library('hamcrest')
-library('se.alipsa:excel-utils')
+library('se.alipsa:spreadsheets')
 
 test.findRowNumSunny <- function() {
-  rowNum <- findRowNumber("df.xlsx", 0, 0, "Iris")
-  assertThat(rowNum, equalTo(35))
-}
-
-test.barf <- function() {
-  tryCatch( 
-    {
-      barf("Some problem")
-    }, 
-    
-    error = function(err) {
-      #print(err$message)
-      assertTrue(endsWith(err$message, " problem"))
-    }
-  )
+  rowNum <- findRowNumber("df.xlsx", 1, 1, "Iris")
+  assertThat(rowNum, equalTo(36))
 }
 
 test.finRowNumRainy <- function() {
   tryCatch(
-    findRowNumber("doesnotexist.xlsx", 0, 0, "Iris"),
+    findRowNumber("doesnotexist.xlsx", 1, 1, "Iris"),
     
     error = function(err) {
       #print(paste("Expected error was: ", err))
@@ -29,24 +16,24 @@ test.finRowNumRainy <- function() {
     }
   )
 
-  rowNum <- findRowNumber("df.xlsx", 0, 0, "Nothing that exist")
-  assertThat(rowNum, equalTo(-1))
+  rowNum <- findRowNumber("df.xlsx", 1, 1, "Nothing that exist")
+  assertThat(rowNum, equalTo(0))
 }
 
 test.findColumnsSunny <- function() {
-  colNum <- findColumnNumber("df.xlsx", 0, 1, "carb")
-  assertThat(colNum, equalTo(10L))
+  colNum <- findColumnNumber("df.xlsx", 1, 2, "carb")
+  assertThat(colNum, equalTo(11L))
 }
 
 test.importExcelWithHeaderRow <- function() {
   excelDf <- importExcel(
     filePath = "df.xlsx",
-    sheetNumber = 0,
-    startRowNum = 1,
-    endRowNum = 33,
-    startColNum = 0,
-    endColNum = 11,
-    firstRowAsColNames = TRUE
+    sheet = 1,
+    startRow = 2,
+    endRow = 34,
+    startColumn = 1,
+    endColumn = 12,
+    firstRowAsColumnNames = TRUE
   )
   #print(head(excelDf,1))
   #print(tail(excelDf,1))
@@ -59,12 +46,12 @@ test.importExcelWithHeaderRow <- function() {
 test.importExcelNoHeaderRow <- function() {
   excelDf <- importExcel(
     filePath = "df.xlsx",
-    sheetNumber = 0,
-    startRowNum = 2,
-    endRowNum = 33,
-    startColNum = 0,
-    endColNum = 11,
-    firstRowAsColNames = FALSE
+    sheet = 1,
+    startRow = 3,
+    endRow = 34,
+    startColumn = 1,
+    endColumn = 12,
+    firstRowAsColumnNames = FALSE
   )
   assertThat(nrow(excelDf), equalTo(32))
   assertThat(ncol(excelDf), equalTo(11))
@@ -73,11 +60,11 @@ test.importExcelNoHeaderRow <- function() {
 test.importExcelWithHeaderNames <- function() {
   excelDf <- importExcel(
     filePath = "df.xlsx",
-    sheetNumber = 0,
-    startRowNum = 2,
-    endRowNum = 33,
-    startColNum = 0,
-    endColNum = 11,
+    sheet = 1,
+    startRow = 3,
+    endRow = 34,
+    startColumn = 1,
+    endColumn = 12,
     columnNames = c("1","2","3","4","5","6","7","8","9","10","11")
   )
   assertThat(nrow(excelDf), equalTo(32))

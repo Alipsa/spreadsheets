@@ -72,6 +72,10 @@ public class ValueExtractor {
       return String.valueOf(getObject(row.getCell(column)));
    }
 
+   public String getString(Cell cell) {
+      return String.valueOf(getObject(cell));
+   }
+
    public Long getLong(int row, int column) {
       return getLong(sheet.getRow(row), column);
    }

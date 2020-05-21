@@ -16,16 +16,14 @@ public class ExcelImporter {
 
    public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
       File excelFile = checkFilePath(filePath);
-      DataFormatter formatter = new DataFormatter();
       List<String> header = new ArrayList<>();
       if (firstRowAsColNames) {
          try (Workbook workbook = WorkbookFactory.create(excelFile)) {
-            FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             Sheet sheet = workbook.getSheetAt(sheetNumber);
+            ValueExtractor ext = new ValueExtractor(sheet);
             Row row = sheet.getRow(startRowNum);
             for (int i = 0; i < endColNum - startColNum; i++) {
-               Cell cell = row.getCell(startColNum + i);
-               header.add(ExcelUtil.stringCellVal(cell, evaluator, formatter));
+               header.add(ext.getString(row, startColNum + i));
             }
          }
          startRowNum = startRowNum + 1;

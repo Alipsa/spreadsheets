@@ -1,32 +1,33 @@
 # remember to add export(function name) to NAMESPACE to make them available
 
-findRowNumber <- function(fileName, sheetNumber, column, cellContent) {
+findRowNumber <- function(fileName, sheet = 1, column, cellContent) {
   tryCatch({
-    #import(se.alipsa.excelutils.ExcelReader)
-    util <- ExcelReader$new()
-    rowNum <- util$findRowNum(fileName, as.integer(sheetNumber), as.integer(column), cellContent)
-    return(rowNum)
+    sheetNum <- as.integer(sheet) - 1L
+    colNum <- as.integer(column) - 1L
+    rowNum <- ExcelReader$findRowNum(fileName, sheetNum, colNum, cellContent)
+    return(rowNum + 1)
   },
   error = function(cond) {
     stop(cond);
   })
 }
 
-findColumnNumber <- function(fileName, sheetNumber, row, cellContent) {
+findColumnNumber <- function(fileName, sheet = 1, row, cellContent) {
   tryCatch({
-    util <- ExcelReader$new()
-    colNum <- util$findColNum(fileName, as.integer(sheetNumber), as.integer(row), cellContent)
-    return(colNum)
+    sheetNum <- as.integer(sheet) - 1L
+    rowNum <- as.integer(row) - 1L
+    colNum <- ExcelReader$findColNum(fileName, sheetNum, rowNum, cellContent)
+    return(colNum + 1)
   },
     error = function(cond) {
     stop(cond);
   })
 }
 
-importExcel <- function(filePath, sheetNumber = 0, startRowNum = 0, endRowNum, startColNum = 0, endColNum,
-                        firstRowAsColNames = FALSE, columnNames = NA) {
-  if (firstRowAsColNames == TRUE & !is.na(columnNames)) {
-    stop("Column names are defined but firstRowAsColNames is set to TRUE")
+importExcel <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn = 1, endColumn,
+                        firstRowAsColumnNames = FALSE, columnNames = NA) {
+  if (firstRowAsColumnNames == TRUE & !is.na(columnNames)) {
+    stop("Column names are defined but firstRowAsColumnNames is set to TRUE")
   }
   if (!is.na(columnNames) & !(is.list(columnNames) | is.vector(columnNames))) {
     stop("columnNames must be a vector or a list")
@@ -34,39 +35,37 @@ importExcel <- function(filePath, sheetNumber = 0, startRowNum = 0, endRowNum, s
   if (is.vector(columnNames)) {
     columnNames <- as.list(columnNames)
   }
-  if (startRowNum > endRowNum) {
-    stop("wrong arguments: startRowNum > endRowNum")
+  if (startRow > endRow) {
+    stop("wrong arguments: startRow > endRow")
   }
-  if (startColNum > endColNum) {
-    stop("wrong arguments: startColNum > endColNum")
+  if (startColumn > endColumn) {
+    stop("wrong arguments: startColumn > endColumn")
   }
+  sheetNum <- as.integer(sheet) - 1L
+  startRowNum <- as.integer(startRow) - 1L
+  endRowNum <- as.integer(endRow) -1L
+  startColNum <- as.integer(startColumn) - 1L
+  endColNum <- as.integer(endColumn) - 1L
   if (is.na(columnNames)) {
     excelDf <- ExcelImporter$importExcel(
       filePath,
-      as.integer(sheetNumber),
-      as.integer(startRowNum),
-      as.integer(endRowNum),
-      as.integer(startColNum),
-      as.integer(endColNum),
-      firstRowAsColNames
+      sheetNum,
+      startRowNum,
+      endRowNum,
+      startColNum,
+      endColNum,
+      firstRowAsColumnNames
     )
     return(excelDf)
   } else {
     excelDf <- ExcelImporter$importExcel(
       filePath,
-      as.integer(sheetNumber),
-      as.integer(startRowNum),
-      as.integer(endRowNum),
-      as.integer(startColNum),
-      as.integer(endColNum),
+      sheetNum,
+      startRowNum,
+      endRowNum,
+      startColNum,
+      endColNum,
       columnNames
     )
   }
-}
-
-# Not sure why this is working here but in findRowNum i have to catch and rethrow
-barf <- function(msg) {
-  import(se.alipsa.excelutils.Barfer)
-  barfer <- Barfer$new()
-  barfer$barf(msg)
 }

@@ -10,14 +10,7 @@ importClass(se.alipsa.excelutils.ExcelReader)
 importClass(se.alipsa.excelutils.ExcelImporter)
 importClass(org.renjin.sexp.ListVector)
 
-# test stuff
-export(barf)
-
 # functional methods
 export(findRowNumber)
 export(findColumnNumber)
 export(importExcel)
-
-# OO stuff
-export(ExcelUtil)
-exportClasses(ExcelUtil)
