@@ -72,13 +72,9 @@ public class ExcelExporter {
    }
 
    // Create new or update existing excel, adding or updating a sheet with the name specified
-   public static boolean exportExcel(ListVector dataFrame, String filePath, String sheetName, boolean overWrite) {
+   public static boolean exportExcel(ListVector dataFrame, String filePath, String sheetName) {
       File file = new File(filePath);
 
-      if (!overWrite && file.exists()) {
-         System.err.println("Overwrite is false and file already exists");
-         return false;
-      }
       try {
          Workbook workbook;
          FileInputStream fis = null;

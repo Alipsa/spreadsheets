@@ -98,12 +98,20 @@ To export to a new excel sheet use
 exportExcel(df, filePath)
 ```
 Where df is the data-frame to export and filePath the path to the new sheet
-To add a sheet to an existing spreadsheet use
+To create a new spreadsheet or add a new sheet to an existing spreadsheet use
 ```r
 exportExcel(df, filePath, sheet)
 ```
 Where df is the data-frame to export and filePath the path to the existing spreadsheet, 
-and sheet is either a sheet index or a sheet name. 
+and sheet is the sheet index to update. 
+
+Anoher variant is:
+
+```r
+exportExcel(df, filePath, sheet)
+```
+Where df is the data-frame to export and filePath the path to the new or existing spreadsheet, 
+and sheet is the sheet name to create or update. 
 
 The function returns TRUE if successful or FALSE if not. If the problem is severe there will likely an
 error thrown.
