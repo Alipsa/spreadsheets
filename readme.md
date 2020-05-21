@@ -12,24 +12,34 @@ first sheet in the spreadsheet and column number 1 is the first (A) column etc.
 ### findRowNumber: Find a row in a column
 To find the first row where the cell value matches the cellContent parameter:  
 
-`rowNum <- findRowNumber(fileName = "df.xlsx", sheet = 1, column = 1, "Iris")`
+```r
+rowNum <- findRowNumber(fileName = "df.xlsx", sheet = 1, column = 1, "Iris")
+```
 
 You can also reference the sheet by name:
 
-`rowNum <- findRowNumber(fileName = "df.xlsx", sheet = "theSheetName", column = 1, "Iris")`
+```r
+rowNum <- findRowNumber(fileName = "df.xlsx", sheet = "theSheetName", column = 1, "Iris")
+```
 
 or only use names
 
-`rowNum <- findRowNumber(fileName = "df.xlsx", sheet = "theSheetName", column = "A", "Iris")`
+```r
+rowNum <- findRowNumber(fileName = "df.xlsx", sheet = "theSheetName", column = "A", "Iris")
+```
 
 ### findColumnNumber: Find a column in a row
 To find the first column where the cell value matches the cellContent parameter:  
 
-`colNum <- findColumnNumber(fileName = "df.xlsx", sheet = 1, row = 2, "carb")`
+```r
+colNum <- findColumnNumber(fileName = "df.xlsx", sheet = 1, row = 2, "carb")`
+```
 
 You can also reference the sheet by name:
 
-`colNum <- findColumnNumber("df.xlsx", "project-dashboard", 2, "carb")`
+```r
+colNum <- findColumnNumber("df.xlsx", "project-dashboard", 2, "carb")
+```
 
 The return value of findColumnNumber is an Integer with the matching row index
 or 0 if no such cell was found.
@@ -65,7 +75,9 @@ excelDf <- importExcel(
 The resulting dataframe will read all values as character strings so you will likely need to
 massage the data efter the import to get what you want. e.g.
 
-`excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg)`
+```r
+excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg)
+```
 
 In the example above, the regional setting of the excel sheet used comma as the decimal separator so we replace them with 
 dots to we can then convert them to numerics.
@@ -75,7 +87,7 @@ The parameters are as follows:
 * sheet: The sheet index (index starting with 1) for the sheet to import. Can alternatively be the name of the sheet. Default: 1 
 * startRow: The row to start reading from. Default: 1
 * endRow: The last row to read from
-* startColumn: The column index (or name e.g. A) to start reading from. default: 1
+* startColumn: The column index (or name e.g. "A") to start reading from. default: 1
 * endColumn: The last column index (or name) to read from.
 * firstRowAsColumnNames: If true then use the values of the first column as column names for the data.frame
 
