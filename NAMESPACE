@@ -2,18 +2,16 @@
 # which functions the package exposes (i.e. exports) to other packages
 # see http://docs.renjin.org/en/latest/writing-renjin-extensions.html for details about the syntax
 
-# R imports
-import(methods)
-
 # Java classes
 importClass(se.alipsa.excelutils.ExcelReader)
 importClass(se.alipsa.excelutils.ExcelImporter)
+importClass(se.alipsa.excelutils.ExcelExporter)
 importClass(se.alipsa.excelutils.ExcelUtil)
-# importClass(org.renjin.sexp.ListVector)
 
 # functional methods
 export(findRowNumber)
 export(findColumnNumber)
-export(importExcel)
 export(columnIndex)
 export(columnName)
+export(importExcel)
+export(exportExcel)

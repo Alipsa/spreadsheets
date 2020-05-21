@@ -107,5 +107,16 @@ importExcel <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn =
       endColumn,
       columnNames
     )
+    return(excelDf)
   }
+
+  exportExcel <- function(df, filePath, sheet = NA) {
+    if (is.na(sheet)) {
+      return(ExcelExporter$exportExcel(df, filePath))
+    } else {
+      return(ExcelExporter$exportExcel(df, filePath, sheet))
+    }
+  }
+
+
 }

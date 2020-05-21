@@ -59,7 +59,7 @@ print(columnIndex("AF"))
 [1] 32
 ```
 
-### import a spreadsheet
+### importExcel: import a spreadsheet
 Reads the content of the spreadsheet and return a data.frame
 ```r
 excelDf <- importExcel(
@@ -91,7 +91,27 @@ The parameters are as follows:
 * endColumn: The last column index (or name) to read from.
 * firstRowAsColumnNames: If true then use the values of the first column as column names for the data.frame
 
+### exportExcel: export a spreadsheet
+
+To export to a new excel sheet use
+```r
+exportExcel(df, filePath)
+```
+Where df is the data-frame to export and filePath the path to the new sheet
+To add a sheet to an existing spreadsheet use
+```r
+exportExcel(df, filePath, sheet)
+```
+Where df is the data-frame to export and filePath the path to the existing spreadsheet, 
+and sheet is either a sheet index or a sheet name. 
+
+The function returns TRUE if successful or FALSE if not. If the problem is severe there will likely an
+error thrown.
+
 ## Background / motivation
-Sometimes I had problems with loading the `xlsx` package and I missed some 
-search functionality to make imports more dynamic in my R code. This is a "Renjin native"
-package that attempts to address some of those issues.
+Why not just use one of the existing packages such as xlsx, XLConnect, or gdata? 
+Sometimes I had problems with loading these packages or some functions did not work (none of them fully passes 
+the tests on renjin cran).
+Also I missed some search functionality to make imports more dynamic in my R code. 
+As the gcc-bridge (which compiles C code to jvm byte code) gets better, the first kind of problem will disappear
+but I needed something "now". This is a "Renjin native" package that attempts to address some of those issues.
