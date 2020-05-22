@@ -97,15 +97,11 @@ To export to a new excel sheet use
 ```r
 exportExcel(df, filePath)
 ```
-Where df is the data-frame to export and filePath the path to the new sheet
-To create a new spreadsheet or add a new sheet to an existing spreadsheet use
-```r
-exportExcel(df, filePath, sheet)
-```
-Where df is the data-frame to export and filePath the path to the existing spreadsheet, 
-and sheet is the sheet index to update. 
+Where df is the data-frame to export and filePath the path to the new sheet. If the excel file already exist, no action
+will be taken.
 
-Anoher variant is:
+
+The "upsert" (create new if not exists, update if exist) version is:
 
 ```r
 exportExcel(df, filePath, sheet)
@@ -113,13 +109,12 @@ exportExcel(df, filePath, sheet)
 Where df is the data-frame to export and filePath the path to the new or existing spreadsheet, 
 and sheet is the sheet name to create or update. 
 
-The function returns TRUE if successful or FALSE if not. If the problem is severe there will likely an
-error thrown.
+The function returns TRUE if successful or FALSE if not. 
 
 ## Background / motivation
 Why not just use one of the existing packages such as xlsx, XLConnect, or gdata? 
-Sometimes I had problems with loading these packages or some functions did not work (none of them fully passes 
+Sometimes I had problems with loading these packages, or some functions did not work (none of them fully passes 
 the tests on renjin cran).
 Also I missed some search functionality to make imports more dynamic in my R code. 
-As the gcc-bridge (which compiles C code to jvm byte code) gets better, the first kind of problem will disappear
+As the gcc-bridge (which compiles C code to jvm byte code) gets better, the first kind of problem will disappear,
 but I needed something "now". This is a "Renjin native" package that attempts to address some of those issues.

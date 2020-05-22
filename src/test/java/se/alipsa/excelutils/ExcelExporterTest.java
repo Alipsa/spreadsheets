@@ -28,9 +28,9 @@ public class ExcelExporterTest {
       File file = new File("mtcars.xlsx");
       if (file.exists()) file.delete();
 
-      ExcelExporter.exportExcel(mtcars, file.getName(), false);
+      ExcelExporter.exportExcel(mtcars, file.getName());
       assertTrue(file.exists());
-      ExcelExporter.exportExcel(mtcars, file.getName(), true);
+      ExcelExporter.exportExcel(mtcars, file.getName(), "Sheet0");
 
 
       try(Workbook workbook = WorkbookFactory.create(file)) {
@@ -43,8 +43,19 @@ public class ExcelExporterTest {
       }
 
       ListVector iris = (ListVector)engine.eval("iris");
-      ExcelExporter.exportExcel(iris, file.getName(), "iris", true);
-
+      ExcelExporter.exportExcel(iris, file.getName(), "iris");
+      try(Workbook workbook = WorkbookFactory.create(file)) {
+         assertEquals(2, workbook.getNumberOfSheets(), "Number of sheets");
+         assertEquals(0, workbook.getSheetIndex("Sheet0"), "mtcars sheet index");
+         assertEquals(1, workbook.getSheetIndex("iris"), "iris sheet index");
+         Sheet irisSheet = workbook.getSheet("iris");
+         Row lastRow = irisSheet.getRow(150);
+         assertEquals(5.9, lastRow.getCell(0).getNumericCellValue(), 0.00001);
+         assertEquals(3, (int)Math.round(lastRow.getCell(1).getNumericCellValue()));
+         assertEquals(5.1, lastRow.getCell(2).getNumericCellValue(), 0.00001);
+         assertEquals(1.8, lastRow.getCell(3).getNumericCellValue(), 0.00001);
+         assertEquals("virginica", lastRow.getCell(4).getStringCellValue());
+      }
 
    }
 }

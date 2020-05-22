@@ -11,9 +11,9 @@ import java.util.Map;
 public class ExcelExporter {
 
    // Create a new excel file
-   public static boolean exportExcel(ListVector dataFrame, String filePath, boolean overWrite) {
+   public static boolean exportExcel(ListVector dataFrame, String filePath) {
       File file = new File(filePath);
-      if (!overWrite && file.exists()) {
+      if (file.exists()) {
          System.err.println("Overwrite is false and file already exists");
          return false;
       }
@@ -33,36 +33,6 @@ public class ExcelExporter {
          try(FileOutputStream fos = new FileOutputStream(file)) {
             workbook.write(fos);
          }
-         return true;
-      } catch (IOException e) {
-         System.err.println("Failed to create excel file: " + e.toString());
-         e.printStackTrace();
-         return false;
-      }
-   }
-
-
-   // Update and existing excel
-   public static boolean exportExcel(ListVector dataFrame, String filePath, int sheetIndex) {
-      File file = new File(filePath);
-      if (!file.exists()) {
-         System.err.println("No excel file name " + filePath + " exists");
-         return false;
-      }
-
-      try {
-         FileInputStream fis = new FileInputStream(file);
-         Workbook workbook = WorkbookFactory.create(fis);
-         Sheet sheet = workbook.getSheetAt(sheetIndex);
-         if (sheet == null) {
-            sheet = workbook.createSheet();
-         }
-         buildSheet(dataFrame, sheet);
-         fis.close();
-         try(FileOutputStream fos = new FileOutputStream(file)) {
-            workbook.write(fos);
-         }
-         workbook.close();
          return true;
       } catch (IOException e) {
          System.err.println("Failed to create excel file: " + e.toString());
