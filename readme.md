@@ -68,7 +68,7 @@ excelDf <- importExcel(
     startRow = 2,
     endRow = 34,
     startColumn = 1,
-    endColumn = 12,
+    endColumn = 11,
     firstRowAsColumnNames = TRUE
   )
 ```

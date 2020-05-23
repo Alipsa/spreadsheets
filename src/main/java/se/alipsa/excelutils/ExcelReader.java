@@ -155,12 +155,10 @@ public class ExcelReader {
       ValueExtractor ext = new ValueExtractor(sheet);
       int poiRowNum = rowNumber - 1;
       Row row = sheet.getRow(poiRowNum);
-      int colNum = 0;
-      for (Iterator<Cell> iter = row.cellIterator(); iter.hasNext(); ) {
-         colNum++;
-         Cell cell = iter.next();
+      for (int colNum = 0; colNum < row.getLastCellNum(); colNum++) {
+         Cell cell = row.getCell(colNum);
          if (content.equals(ext.getString(cell))) {
-            return colNum;
+            return colNum + 1;
          }
       }
       return -1;

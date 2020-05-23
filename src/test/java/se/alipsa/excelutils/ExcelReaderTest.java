@@ -23,6 +23,9 @@ public class ExcelReaderTest {
       int colNum = ExcelReader.findColNum("df.xlsx",1,37,"Petal.Length");
       assertEquals(3, colNum);
       assertEquals(ExcelUtil.toColumnNumber("C"), colNum);
+
+      colNum = ExcelReader.findColNum("df.xlsx",1,36,"test");
+      assertEquals(ExcelUtil.toColumnNumber("L"), colNum);
    }
 
    @Test
