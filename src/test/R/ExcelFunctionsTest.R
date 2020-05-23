@@ -11,7 +11,7 @@ test.findRowNumSunny <- function() {
 
 test.finRowNumRainy <- function() {
   tryCatch(
-    findRowNumber(fileName = "doesnotexist.xlsx", sheet =1, column = 1, "Iris"),
+    findRowNumber(fileName = "doesnotexist.xlsx", sheet = 1, column = 1, "Iris"),
     
     error = function(err) {
       #print(paste("Expected error was: ", err))
@@ -20,7 +20,7 @@ test.finRowNumRainy <- function() {
   )
 
   rowNum <- findRowNumber("df.xlsx", 1, 1, "Nothing that exist")
-  assertThat(rowNum, equalTo(0))
+  assertThat(rowNum, equalTo(-1))
 }
 
 test.findColumnsSunny <- function() {
@@ -38,7 +38,7 @@ test.importExcelWithHeaderRow <- function() {
     startRow = 2,
     endRow = 34,
     startColumn = 1,
-    endColumn = 12,
+    endColumn = 11,
     firstRowAsColumnNames = TRUE
   )
   #print(head(excelDf,1))
@@ -57,7 +57,7 @@ test.importExcelNoHeaderRow <- function() {
     startRow = 3,
     endRow = 34,
     startColumn = 1,
-    endColumn = 12,
+    endColumn = 11,
     firstRowAsColumnNames = FALSE
   )
   assertThat(nrow(excelDf), equalTo(32))
@@ -72,7 +72,7 @@ test.importExcelWithHeaderNames <- function() {
     startRow = 3,
     endRow = 34,
     startColumn = 1,
-    endColumn = 12,
+    endColumn = 11,
     columnNames = c("1","2","3","4","5","6","7","8","9","10","11")
   )
   assertThat(nrow(excelDf), equalTo(32))
@@ -88,4 +88,20 @@ test.columnNameConversions <- function() {
   assertThat(columnName(14), equalTo("N"))
   assertThat(columnName(32), equalTo("AF"))
   assertThat(columnName(704), equalTo("AAB"))
+}
+
+test.exportNewExcel <- function() {
+  exportExcel(mtcars, "test.xlsx")
+  gearCol <- findColumnNumber("test.xlsx", 1, 1, "gear")
+  expected <- columnIndex("J")
+  assertThat(gearCol, equalTo(expected))
+}
+
+test.updateExcel <- function() {
+  exportExcel(mtcars, "test2.xlsx")
+  exportExcel(iris, "test2.xlsx", "iris")
+  gearCol <- findColumnNumber("test2.xlsx", 1, 1, "gear")
+  assertThat(gearCol, equalTo(columnIndex("J")))
+  versicolorRow <- findRowNumber("test2.xlsx", "iris", columnIndex("E") , "versicolor")
+  assertThat(versicolorRow, equalTo(52))
 }

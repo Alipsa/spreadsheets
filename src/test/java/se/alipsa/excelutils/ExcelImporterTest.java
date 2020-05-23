@@ -14,7 +14,7 @@ public class ExcelImporterTest {
 
    @Test
    public void testExcelImportWithHeaderRow() throws Exception {
-      ListVector vec = ExcelImporter.importExcel("df.xlsx", 0,1, 33, 0, 11, true);
+      ListVector vec = ExcelImporter.importExcel("df.xlsx", 1,2, 34, 1, 11, true);
       //System.out.println(vec);
 
       List<String> columnList = toHeaderList(vec);
@@ -32,7 +32,7 @@ public class ExcelImporterTest {
 
    @Test
    public void testExcelImportNoHeaderRow() throws Exception {
-      ListVector vec = ExcelImporter.importExcel("df.xlsx", 0,2, 33, 0, 11, false);
+      ListVector vec = ExcelImporter.importExcel("df.xlsx", 1,3, 34, 1, 11, false);
       //System.out.println(vec);
 
       List<String> columnList = toHeaderList(vec);
@@ -49,7 +49,7 @@ public class ExcelImporterTest {
    @Test
    public void testExcelImportWithHeaderList() throws Exception {
       Vector headerList = StringVector.newBuilder().addAll(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11")).build();
-      ListVector vec = ExcelImporter.importExcel("df.xlsx", 0,2, 33, 0, 11, headerList);
+      ListVector vec = ExcelImporter.importExcel("df.xlsx", 1,3, 34, 1, 11, headerList);
       //System.out.println(vec);
 
       List<String> columnList = toHeaderList(vec);

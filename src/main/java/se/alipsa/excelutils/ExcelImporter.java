@@ -28,13 +28,11 @@ public class ExcelImporter {
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
       File excelFile = checkFilePath(filePath);
-      int sheetNumber;
       List<String> header = new ArrayList<>();
 
       try (Workbook workbook = WorkbookFactory.create(excelFile)) {
-         sheetNumber = workbook.getSheetIndex(sheetName);
+         Sheet sheet = workbook.getSheet(sheetName);
          if (firstRowAsColNames) {
-            Sheet sheet = workbook.getSheet(sheetName);
             buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
             startRowNum = startRowNum + 1;
          } else {
@@ -42,32 +40,27 @@ public class ExcelImporter {
                header.add(String.valueOf(i));
             }
          }
+         return importExcel(sheet, startRowNum, endRowNum, startColNum, endColNum, header);
       }
-      return importExcel(excelFile, sheetNumber, startRowNum, endRowNum, startColNum, endColNum, header);
+
    }
 
    public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
       File excelFile = checkFilePath(filePath);
       List<String> header = new ArrayList<>();
-      if (firstRowAsColNames) {
-         try (Workbook workbook = WorkbookFactory.create(excelFile)) {
-            Sheet sheet = workbook.getSheetAt(sheetNumber);
-            buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
-         }
-         startRowNum = startRowNum + 1;
-      } else {
-         for (int i = 1; i <= endColNum - startColNum; i++) {
-            header.add(String.valueOf(i));
-         }
-      }
-      return importExcel(excelFile, sheetNumber, startRowNum, endRowNum, startColNum, endColNum, header);
-   }
 
-   private static void buildHeaderRow(int startRowNum, int startColNum, int endColNum, List<String> header, Sheet sheet) {
-      ValueExtractor ext = new ValueExtractor(sheet);
-      Row row = sheet.getRow(startRowNum);
-      for (int i = 0; i < endColNum - startColNum; i++) {
-         header.add(ext.getString(row, startColNum + i));
+      try (Workbook workbook = WorkbookFactory.create(excelFile)) {
+         Sheet sheet = workbook.getSheetAt(sheetNumber-1);
+         if (firstRowAsColNames) {
+            buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
+            startRowNum = startRowNum + 1;
+         } else {
+            for (int i = 0; i <= endColNum - startColNum; i++) {
+               header.add(String.valueOf(i+1));
+            }
+         }
+         //System.out.println("Header size is " + header.size() + "; " + header);
+         return importExcel(sheet, startRowNum, endRowNum, startColNum, endColNum, header);
       }
    }
 
@@ -77,41 +70,61 @@ public class ExcelImporter {
       for (int i = 0; i < colNames.length(); i++) {
          header.add(colNames.getElementAsString(i));
       }
-      return importExcel(excelFile, sheetNumber, startRowNum, endRowNum, startColNum, endColNum, header);
+      try (Workbook workbook = WorkbookFactory.create(excelFile)) {
+         Sheet sheet = workbook.getSheetAt(sheetNumber-1);
+         return importExcel(sheet, startRowNum, endRowNum, startColNum, endColNum, header);
+      }
+
    }
 
-   private static ListVector importExcel(File excelFile, int sheetNumber, int startRowNum, int endRowNum, int startColNum, int endColNum, List<String> colNames) throws Exception {
-      try (Workbook workbook = WorkbookFactory.create(excelFile)) {
-         Sheet sheet = workbook.getSheetAt(sheetNumber);
-         ValueExtractor ext = new ValueExtractor(sheet);
-         List<StringVector.Builder> builders = stringBuilders(startColNum, endColNum);
-         int numRows = 0;
-         for (int rowIdx = startRowNum; rowIdx <= endRowNum; rowIdx++) {
-            numRows++;
-            Row row = sheet.getRow(rowIdx);
-            int i = 0;
-            for (int colIdx = startColNum; colIdx < endColNum; colIdx++) {
-               builders.get(i++).add(ext.getString(row, colIdx));
-            }
-         }
-         ListVector columnVector = columnInfo(colNames);
-         /* call build() on each column and add them as named cols to df */
-         ListVector.NamedBuilder dfBuilder = new ListVector.NamedBuilder();
-         for (int i = 0; i < columnVector.length(); i++) {
-            ListVector ci = (ListVector) columnVector.get(i);
-            dfBuilder.add(ci.get("name").asString(), builders.get(i).build());
-         }
-         dfBuilder.setAttribute("row.names", new RowNamesVector(numRows));
-         dfBuilder.setAttribute("class", StringVector.valueOf("data.frame"));
-         return dfBuilder.build();
+   private static void buildHeaderRow(int startRowNum, int startColNum, int endColNum, List<String> header, Sheet sheet) {
+      startRowNum--;
+      startColNum--;
+      endColNum--;
+      ValueExtractor ext = new ValueExtractor(sheet);
+      Row row = sheet.getRow(startRowNum);
+      for (int i = 0; i <= endColNum - startColNum; i++) {
+         header.add(ext.getString(row, startColNum + i));
       }
+   }
+
+   private static ListVector importExcel(Sheet sheet, int startRowNum, int endRowNum, int startColNum, int endColNum, List<String> colNames) throws Exception {
+      startRowNum--;
+      endRowNum--;
+      startColNum--;
+      endColNum--;
+
+      ValueExtractor ext = new ValueExtractor(sheet);
+      List<StringVector.Builder> builders = stringBuilders(startColNum, endColNum);
+      int numRows = 0;
+      for (int rowIdx = startRowNum; rowIdx <= endRowNum; rowIdx++) {
+         numRows++;
+         Row row = sheet.getRow(rowIdx);
+         int i = 0;
+         for (int colIdx = startColNum; colIdx <= endColNum; colIdx++) {
+            //System.out.println("Adding ext.getString(" + rowIdx + ", " + colIdx+ ") = " + ext.getString(row, colIdx));
+            builders.get(i++).add(ext.getString(row, colIdx));
+         }
+      }
+      ListVector columnVector = columnInfo(colNames);
+      /* call build() on each column and add them as named cols to df */
+      ListVector.NamedBuilder dfBuilder = new ListVector.NamedBuilder();
+      for (int i = 0; i < columnVector.length(); i++) {
+         ListVector ci = (ListVector) columnVector.get(i);
+         dfBuilder.add(ci.get("name").asString(), builders.get(i).build());
+      }
+      dfBuilder.setAttribute("row.names", new RowNamesVector(numRows));
+      dfBuilder.setAttribute("class", StringVector.valueOf("data.frame"));
+      return dfBuilder.build();
+
    }
 
    private static List<StringVector.Builder> stringBuilders(int startColNum, int endColNum) {
       List<StringVector.Builder> builder = new ArrayList<>();
-      for (int i = 0; i < endColNum - startColNum; i++) {
+      for (int i = 0; i <= endColNum - startColNum; i++) {
          builder.add(new StringVector.Builder());
       }
+      //System.out.println("created " + builder.size() + " stringBuilders");
       return builder;
    }
 

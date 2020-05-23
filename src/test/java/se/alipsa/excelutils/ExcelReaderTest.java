@@ -8,25 +8,26 @@ public class ExcelReaderTest {
 
    @Test
    public void testFindRowNum() throws Exception {
-      int rowNum = ExcelReader.findRowNum("df.xlsx",0,0,"Iris");
-      assertEquals(35, rowNum);
+      int rowNum = ExcelReader.findRowNum("df.xlsx",1,1,"Iris");
+      assertEquals(36, rowNum);
    }
 
    @Test
    public void testFindRowNumRainy() throws Exception {
-      int rowNum = ExcelReader.findRowNum("df.xlsx", 0,0,"NOthing that exist");
+      int rowNum = ExcelReader.findRowNum("df.xlsx", 1,1,"NOthing that exist");
       assertEquals(-1, rowNum);
    }
 
    @Test
    public void testFindColNum() throws Exception {
-      int colNum = ExcelReader.findColNum("df.xlsx",0,36,"Petal.Length");
-      assertEquals(2, colNum);
+      int colNum = ExcelReader.findColNum("df.xlsx",1,37,"Petal.Length");
+      assertEquals(3, colNum);
+      assertEquals(ExcelUtil.toColumnNumber("C"), colNum);
    }
 
    @Test
    public void testFindColNumRainy() throws Exception {
-      int colNum = ExcelReader.findColNum("df.xlsx",0,16,"Foff");
+      int colNum = ExcelReader.findColNum("df.xlsx",1,17,"Foff");
       assertEquals(-1, colNum);
    }
 }

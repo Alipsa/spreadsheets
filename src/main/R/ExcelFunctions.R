@@ -10,13 +10,13 @@ findRowNumber <- function(fileName, sheet = 1, column, cellContent) {
 
   tryCatch({
     if (is.numeric(sheet)) {
-     sheet <- as.integer(sheet) - 1L
+     sheet <- as.integer(sheet)
     }
     if (is.numeric(column)) {
-     column <- as.integer(column) - 1L
+     column <- as.integer(column)
     }
     rowNum <- ExcelReader$findRowNum(fileName, sheet, column, cellContent)
-    return(rowNum + 1)
+    return(rowNum)
   },
   error = function(cond) {
     stop(cond);
@@ -33,11 +33,11 @@ findColumnNumber <- function(fileName, sheet = 1, row, cellContent) {
       stop("sheet parameter must either be an index or a string corresponding to the sheet")
     }
     if (is.numeric(sheet)) {
-      sheet <- as.integer(sheet) - 1L
+      sheet <- as.integer(sheet)
     }
-    rowNum <- as.integer(row) - 1L
+    rowNum <- as.integer(row)
     colNum <- ExcelReader$findColNum(fileName, sheet, rowNum, cellContent)
-    return(colNum + 1)
+    return(colNum)
   },
     error = function(cond) {
     stop(cond);
@@ -76,15 +76,15 @@ importExcel <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn =
     stop("wrong arguments: startColumn > endColumn")
   }
   if (is.numeric(sheet)) {
-    sheet <- as.integer(sheet) - 1L
+    sheet <- as.integer(sheet)
   }
-  startRowNum <- as.integer(startRow) - 1L
-  endRowNum <- as.integer(endRow) -1L
+  startRowNum <- as.integer(startRow)
+  endRowNum <- as.integer(endRow)
   if (is.numeric(startColumn)) {
-    startColumn <- as.integer(startColumn) - 1L
+    startColumn <- as.integer(startColumn)
   }
   if (is.numeric(endColumn)) {
-    endColumn <- as.integer(endColumn) - 1L
+    endColumn <- as.integer(endColumn)
   }
   if (is.na(columnNames)) {
     excelDf <- ExcelImporter$importExcel(
@@ -109,14 +109,12 @@ importExcel <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn =
     )
     return(excelDf)
   }
+}
 
-  exportExcel <- function(df, filePath, sheet = NA) {
-    if (is.na(sheet)) {
-      return(ExcelExporter$exportExcel(df, filePath))
-    } else {
-      return(ExcelExporter$exportExcel(df, filePath, sheet))
-    }
+exportExcel <- function(df, filePath, sheet = NA) {
+  if (is.na(sheet)) {
+    return(ExcelExporter$exportExcel(df, filePath))
+  } else {
+    return(ExcelExporter$exportExcel(df, filePath, sheet))
   }
-
-
 }

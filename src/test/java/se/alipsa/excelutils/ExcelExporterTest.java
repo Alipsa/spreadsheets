@@ -57,5 +57,11 @@ public class ExcelExporterTest {
          assertEquals("virginica", lastRow.getCell(4).getStringCellValue());
       }
 
+      try {
+         assertEquals(52, ExcelReader.findRowNum(file.getName(), "iris", ExcelUtil.toColumnNumber("E"), "versicolor"));
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+
    }
 }

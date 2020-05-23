@@ -14,6 +14,10 @@ public class ExcelUtil {
       return number;
    }
 
+   public static int toPoiColumnNumber(String name) {
+      return toColumnNumber(name) -1;
+   }
+
    public static String toColumnName(int number) {
       StringBuilder sb = new StringBuilder();
       while (number-- > 0) {

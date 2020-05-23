@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class ExcelExporter {
 
-   // Create a new excel file
+   /** Create a new excel file */
    public static boolean exportExcel(ListVector dataFrame, String filePath) {
       File file = new File(filePath);
       if (file.exists()) {
@@ -41,7 +41,7 @@ public class ExcelExporter {
       }
    }
 
-   // Create new or update existing excel, adding or updating a sheet with the name specified
+   /** upsert: Create new or update existing excel, adding or updating a sheet with the name specified */
    public static boolean exportExcel(ListVector dataFrame, String filePath, String sheetName) {
       File file = new File(filePath);
 
