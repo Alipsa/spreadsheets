@@ -59,10 +59,10 @@ print(columnIndex("AF"))
 [1] 32
 ```
 
-### importExcel: import a spreadsheet
+### importSpreadsheet: import an Excel or Open Office spreadsheet
 Reads the content of the spreadsheet and return a data.frame
 ```r
-excelDf <- importExcel(
+excelDf <- importSpreadsheet(
     filePath = "df.xlsx",
     sheet = 1,
     startRow = 2,
@@ -91,20 +91,20 @@ The parameters are as follows:
 * endColumn: The last column index (or name) to read from.
 * firstRowAsColumnNames: If true then use the values of the first column as column names for the data.frame
 
-### exportExcel: export a spreadsheet
+### exportSpreadsheet: export an excel or Open Office spreadsheet
 
-To export to a new excel sheet use
+To export to a new spread sheet use
 ```r
-exportExcel(df, filePath)
+exportSpreadsheet(df, filePath)
 ```
-Where df is the data-frame to export and filePath the path to the new sheet. If the excel file already exist, no action
+Where df is the data-frame to export and filePath the path to the new sheet. If the file already exist, no action
 will be taken.
 
 
 The "upsert" (create new if not exists, update if exist) version is:
 
 ```r
-exportExcel(df, filePath, sheet)
+exportSpreadsheet(df, filePath, sheet)
 ```
 Where df is the data-frame to export and filePath the path to the new or existing spreadsheet, 
 and sheet is the sheet name to create or update. 
