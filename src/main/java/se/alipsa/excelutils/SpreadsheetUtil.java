@@ -1,6 +1,6 @@
 package se.alipsa.excelutils;
 
-public class ExcelUtil {
+public class SpreadsheetUtil {
 
    public static int toColumnNumber(String name) {
       if (name == null) {

@@ -15,15 +15,15 @@ import static se.alipsa.excelutils.FileUtil.checkFilePath;
 public class ExcelImporter {
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, String startColName, int endColNum, boolean firstRowAsColNames) throws Exception {
-      return importExcel(filePath, sheetName, startRowNum, endRowNum, ExcelUtil.toColumnNumber(startColName), endColNum, firstRowAsColNames);
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), endColNum, firstRowAsColNames);
    }
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, String endColName, boolean firstRowAsColNames) throws Exception {
-      return importExcel(filePath, sheetName, startRowNum, endRowNum, startColNum, ExcelUtil.toColumnNumber(endColName), firstRowAsColNames);
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, startColNum, SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
    }
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
-      return importExcel(filePath, sheetName, startRowNum, endRowNum, ExcelUtil.toColumnNumber(startColName), ExcelUtil.toColumnNumber(endColName), firstRowAsColNames);
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
    }
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
@@ -81,7 +81,7 @@ public class ExcelImporter {
       startRowNum--;
       startColNum--;
       endColNum--;
-      ValueExtractor ext = new ValueExtractor(sheet);
+      ExcelValueExtractor ext = new ExcelValueExtractor(sheet);
       Row row = sheet.getRow(startRowNum);
       for (int i = 0; i <= endColNum - startColNum; i++) {
          header.add(ext.getString(row, startColNum + i));
@@ -94,7 +94,7 @@ public class ExcelImporter {
       startColNum--;
       endColNum--;
 
-      ValueExtractor ext = new ValueExtractor(sheet);
+      ExcelValueExtractor ext = new ExcelValueExtractor(sheet);
       List<StringVector.Builder> builders = stringBuilders(startColNum, endColNum);
       int numRows = 0;
       for (int rowIdx = startRowNum; rowIdx <= endRowNum; rowIdx++) {

@@ -32,7 +32,7 @@ test.findColumnsSunny <- function() {
 }
 
 test.importExcelWithHeaderRow <- function() {
-  excelDf <- importExcel(
+  excelDf <- importSpreadsheet(
     filePath = "df.xlsx",
     sheet = 1,
     startRow = 2,
@@ -51,7 +51,7 @@ test.importExcelWithHeaderRow <- function() {
 }
 
 test.importExcelNoHeaderRow <- function() {
-  excelDf <- importExcel(
+  excelDf <- importSpreadsheet(
     filePath = "df.xlsx",
     sheet = 1,
     startRow = 3,
@@ -66,7 +66,7 @@ test.importExcelNoHeaderRow <- function() {
 }
 
 test.importExcelWithHeaderNames <- function() {
-  excelDf <- importExcel(
+  excelDf <- importSpreadsheet(
     filePath = "df.xlsx",
     sheet = 1,
     startRow = 3,
@@ -91,15 +91,15 @@ test.columnNameConversions <- function() {
 }
 
 test.exportNewExcel <- function() {
-  exportExcel(mtcars, "test.xlsx")
+  exportSpreadsheet(mtcars, "test.xlsx")
   gearCol <- findColumnNumber("test.xlsx", 1, 1, "gear")
   expected <- columnIndex("J")
   assertThat(gearCol, equalTo(expected))
 }
 
 test.updateExcel <- function() {
-  exportExcel(mtcars, "test2.xlsx")
-  exportExcel(iris, "test2.xlsx", "iris")
+  exportSpreadsheet(mtcars, "test2.xlsx")
+  exportSpreadsheet(iris, "test2.xlsx", "iris")
   gearCol <- findColumnNumber("test2.xlsx", 1, 1, "gear")
   assertThat(gearCol, equalTo(columnIndex("J")))
   versicolorRow <- findRowNumber("test2.xlsx", "iris", columnIndex("E") , "versicolor")

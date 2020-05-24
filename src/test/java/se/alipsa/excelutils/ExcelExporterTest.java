@@ -58,7 +58,7 @@ public class ExcelExporterTest {
       }
 
       try {
-         assertEquals(52, ExcelReader.findRowNum(file.getName(), "iris", ExcelUtil.toColumnNumber("E"), "versicolor"));
+         assertEquals(52, ExcelReader.findRowNum(file.getName(), "iris", SpreadsheetUtil.toColumnNumber("E"), "versicolor"));
       } catch (Exception e) {
          e.printStackTrace();
       }

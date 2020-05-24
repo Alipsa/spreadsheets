@@ -1,31 +1,24 @@
 package se.alipsa.excelutils;
 
-import org.apache.poi.ss.usermodel.*;
+import com.github.miachm.sods.Range;
+import com.github.miachm.sods.Sheet;
+import com.github.miachm.sods.SpreadSheet;
 
 import java.io.File;
-import java.io.IOException;
 
 import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
-public class ExcelReader {
+public class OdsReader {
 
-   static FormulaEvaluator evaluator;
-   static Workbook workbook;
+   static SpreadSheet spreadSheet;
 
-   private ExcelReader() {
+   private OdsReader() {
       // Prevent instantiation
    }
 
-   public static void setExcel(String filePath) throws Exception {
-      File excelFile = checkFilePath(filePath);
-      workbook = WorkbookFactory.create(excelFile);
-      evaluator = workbook.getCreationHelper().createFormulaEvaluator();
-   }
-
-   public static void close() throws IOException {
-      workbook.close();
-      workbook = null;
-      evaluator = null;
+   public static void setOds(String filePath) throws Exception {
+      File odsFile = checkFilePath(filePath);
+      spreadSheet = new SpreadSheet(odsFile);
    }
 
    /**
@@ -38,16 +31,9 @@ public class ExcelReader {
     * @throws Exception if something goes wrong
     */
    public static int findRowNum(String filePath, int sheetNumber, int colNumber, String content) throws Exception {
-      try {
-         setExcel(filePath);
-         Sheet sheet = workbook.getSheetAt(sheetNumber -1);
-         int rowNum = findRowNum(sheet, colNumber, content);
-         close();
-         return rowNum;
-      } catch (Exception e) {
-         if (workbook != null) close();
-         throw e;
-      }
+      setOds(filePath);
+      Sheet sheet = spreadSheet.getSheet(sheetNumber -1);
+      return findRowNum(sheet, colNumber, content);
    }
 
    public static int findRowNum(String filePath, int sheetNumber, String colName, String content) throws Exception {
@@ -68,16 +54,9 @@ public class ExcelReader {
     * @throws Exception if something goes wrong
     */
    public static int findRowNum(String filePath, String sheetName, int colNumber, String content) throws Exception {
-      try {
-         setExcel(filePath);
-         Sheet sheet = workbook.getSheet(sheetName);
-         int rowNum = findRowNum(sheet, colNumber, content);
-         close();
-         return rowNum;
-      } catch (Exception e) {
-         if (workbook != null) close();
-         throw e;
-      }
+      setOds(filePath);
+      Sheet sheet = spreadSheet.getSheet(sheetName);
+      return findRowNum(sheet, colNumber, content);
    }
 
    /**
@@ -88,14 +67,12 @@ public class ExcelReader {
     * @return the Row as seen in Excel (1 is first row)
     */
    private static int findRowNum(Sheet sheet, int colNumber, String content) {
-      ExcelValueExtractor ext = new ExcelValueExtractor(sheet);
+      OdsValueExtractor ext = new OdsValueExtractor(sheet);
       int poiColNum = colNumber -1;
-      for (int rowCount = 0; rowCount < sheet.getLastRowNum(); rowCount ++) {
-         Row row = sheet.getRow(rowCount);
-         if (row == null) continue;
-         Cell cell = row.getCell(poiColNum);
-         //System.out.println(rowCount + ": " + ext.getString(cell));
-         if (content.equals(ext.getString(cell))) {
+
+      for (int rowCount = 0; rowCount < sheet.getDataRange().getLastRow(); rowCount ++) {
+         //System.out.println(rowCount + ": " + ext.getString(rowCount, poiColNum));
+         if (content.equals(ext.getString(rowCount, poiColNum))) {
             return rowCount + 1;
          }
       }
@@ -109,19 +86,12 @@ public class ExcelReader {
     * @param rowNumber the row number (1 indexed)
     * @param content the string to search for
     * @return the row number that matched or -1 if not found
-    * @throws Exception
+    * @throws Exception if something goes wrong
     */
    public static int findColNum(String filePath, int sheetNumber, int rowNumber, String content) throws Exception {
-      try {
-         setExcel(filePath);
-         Sheet sheet = workbook.getSheetAt(sheetNumber - 1);
-         int colNum = findColNum(sheet, rowNumber, content);
-         close();
-         return colNum;
-      } catch (Exception e) {
-         if (workbook != null) workbook.close();
-         throw e;
-      }
+      setOds(filePath);
+      Sheet sheet = spreadSheet.getSheet(sheetNumber - 1);
+      return findColNum(sheet, rowNumber, content);
    }
 
    /** return the column as seen in excel (e.g. using column(), 1 is the first column etc
@@ -131,16 +101,9 @@ public class ExcelReader {
     * @param content the string to search for
     */
    public static int findColNum(String filePath, String sheetName, int rowNumber, String content) throws Exception {
-      try {
-         setExcel(filePath);
-         Sheet sheet = workbook.getSheet(sheetName);
-         int colNum = findColNum(sheet, rowNumber, content);
-         close();
-         return colNum;
-      } catch (Exception e) {
-         if (workbook != null) workbook.close();
-         throw e;
-      }
+      setOds(filePath);
+      Sheet sheet = spreadSheet.getSheet(sheetName);
+      return findColNum(sheet, rowNumber, content);
    }
 
    /**
@@ -151,12 +114,10 @@ public class ExcelReader {
     */
    private static int findColNum(Sheet sheet, int rowNumber, String content) {
       if (content==null) return -1;
-      ExcelValueExtractor ext = new ExcelValueExtractor(sheet);
+      OdsValueExtractor ext = new OdsValueExtractor(sheet);
       int poiRowNum = rowNumber - 1;
-      Row row = sheet.getRow(poiRowNum);
-      for (int colNum = 0; colNum < row.getLastCellNum(); colNum++) {
-         Cell cell = row.getCell(colNum);
-         if (content.equals(ext.getString(cell))) {
+      for (int colNum = 0; colNum < sheet.getDataRange().getLastColumn(); colNum++) {
+         if (content.equals(ext.getString(poiRowNum, colNum))) {
             return colNum + 1;
          }
       }

@@ -2,13 +2,13 @@ package se.alipsa.excelutils;
 
 import org.apache.poi.ss.usermodel.*;
 
-public class ValueExtractor {
+public class ExcelValueExtractor extends AbstractValueExtractor {
 
    private final Sheet sheet;
    private final FormulaEvaluator evaluator;
    private final DataFormatter dataFormatter;
 
-   public ValueExtractor(Sheet sheet, DataFormatter... dataFormatterOpt) {
+   public ExcelValueExtractor(Sheet sheet, DataFormatter... dataFormatterOpt) {
       this.sheet = sheet;
       evaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
       if (dataFormatterOpt.length > 0) {
@@ -24,18 +24,7 @@ public class ValueExtractor {
    }
 
    public double getDouble(Row row, int column) {
-      Object val = getObject(row.getCell(column));
-      if (val == null) {
-         return 0;
-      }
-      if (val instanceof Double) {
-         return (Double) val;
-      }
-      try {
-         return Double.parseDouble(val.toString());
-      } catch (NumberFormatException e) {
-         return 0;
-      }
+      return getDouble(getObject(row.getCell(column)));
    }
 
    public float getFloat(int row, int column) {
@@ -51,17 +40,7 @@ public class ValueExtractor {
    }
 
    public int getInt(Row row, int column) {
-      Object objVal = getObject(row.getCell(column));
-      if (objVal == null) {
-         return Integer.MIN_VALUE;
-      }
-      if (objVal instanceof Double) {
-         return (int)(Math.round((Double) objVal));
-      }
-      if (objVal instanceof Boolean) {
-         return (boolean)objVal ? 1 : 0;
-      }
-      return Integer.parseInt(objVal.toString());
+      return getInt(getObject(row.getCell(column)));
    }
 
    public String getString(int row, int column) {
@@ -73,7 +52,7 @@ public class ValueExtractor {
    }
 
    public String getString(Cell cell) {
-      return String.valueOf(getObject(cell));
+      return getString(getObject(cell));
    }
 
    public Long getLong(int row, int column) {
@@ -81,17 +60,7 @@ public class ValueExtractor {
    }
 
    public Long getLong(Row row, int column) {
-      Object objVal = getObject(row.getCell(column));
-      if (objVal == null) {
-         return Long.MIN_VALUE;
-      }
-      if (objVal instanceof Double) {
-         return (Math.round((Double) objVal));
-      }
-      if (objVal instanceof Boolean) {
-         return (boolean)objVal ? 1L : 0L;
-      }
-      return Long.parseLong(objVal.toString());
+      return(getLong(getObject(row.getCell(column))));
    }
 
    public Boolean getBoolean(int row, int column) {
@@ -99,11 +68,7 @@ public class ValueExtractor {
    }
 
    public Boolean getBoolean(Row row, int column) {
-      Object val = getObject(row.getCell(column));
-      if (val == null || "".equals(val)) {
-         return null;
-      }
-      return getBoolean(row, column);
+      return getBoolean(getObject(row.getCell(column)));
    }
 
    /** get the value from a Excel cell */
@@ -140,9 +105,5 @@ public class ValueExtractor {
          default:
             return dataFormatter.formatCellValue(cell);
       }
-   }
-
-   public Object getObject(Row row, int colIdx) {
-      return getObject(row.getCell(colIdx));
    }
 }

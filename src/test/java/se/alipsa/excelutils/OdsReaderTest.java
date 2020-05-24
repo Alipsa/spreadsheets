@@ -4,33 +4,33 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExcelReaderTest {
+public class OdsReaderTest {
 
    @Test
    public void testFindRowNum() throws Exception {
-      int rowNum = ExcelReader.findRowNum("df.xlsx",1,1,"Iris");
+      int rowNum = OdsReader.findRowNum("df.ods",1,1,"Iris");
       assertEquals(36, rowNum);
    }
 
    @Test
    public void testFindRowNumRainy() throws Exception {
-      int rowNum = ExcelReader.findRowNum("df.xlsx", 1,1,"NOthing that exist");
+      int rowNum = OdsReader.findRowNum("df.ods", 1,1,"NOthing that exist");
       assertEquals(-1, rowNum);
    }
 
    @Test
    public void testFindColNum() throws Exception {
-      int colNum = ExcelReader.findColNum("df.xlsx",1,37,"Petal.Length");
+      int colNum = OdsReader.findColNum("df.ods",1,37,"Petal.Length");
       assertEquals(3, colNum);
       assertEquals(SpreadsheetUtil.toColumnNumber("C"), colNum);
 
-      colNum = ExcelReader.findColNum("df.xlsx",1,36,"test");
+      colNum = OdsReader.findColNum("df.ods",1,36,"test");
       assertEquals(SpreadsheetUtil.toColumnNumber("L"), colNum);
    }
 
    @Test
    public void testFindColNumRainy() throws Exception {
-      int colNum = ExcelReader.findColNum("df.xlsx",1,17,"Foff");
+      int colNum = OdsReader.findColNum("df.ods",1,17,"Foff");
       assertEquals(-1, colNum);
    }
 }

@@ -6,12 +6,15 @@
 importClass(se.alipsa.excelutils.ExcelReader)
 importClass(se.alipsa.excelutils.ExcelImporter)
 importClass(se.alipsa.excelutils.ExcelExporter)
-importClass(se.alipsa.excelutils.ExcelUtil)
+importClass(se.alipsa.excelutils.OdsReader)
+importClass(se.alipsa.excelutils.OdsImporter)
+importClass(se.alipsa.excelutils.OdsExporter)
+importClass(se.alipsa.excelutils.SpreadsheetUtil)
 
 # functional methods
 export(findRowNumber)
 export(findColumnNumber)
 export(columnIndex)
 export(columnName)
-export(importExcel)
-export(exportExcel)
+export(importSpreadsheet)
+export(exportSpreadsheet)
