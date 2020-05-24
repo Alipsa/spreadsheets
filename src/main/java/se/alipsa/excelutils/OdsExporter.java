@@ -6,7 +6,6 @@ import org.renjin.primitives.Types;
 import org.renjin.sexp.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
@@ -67,9 +66,18 @@ public class OdsExporter {
 
       AtomicVector names = dataFrame.getNames();
 
+      //Ensure there is enough space
+      if (sheet.getLastColumn() < names.length()) {
+         sheet.appendColumns(names.length() - sheet.getLastColumn());
+      }
+      if (sheet.getLastRow() < dataFrame.maxElementLength() + 1) {
+         sheet.appendRows(dataFrame.maxElementLength() + 1 - sheet.getLastRow());
+      }
+
       for (int i = 0; i < names.length(); i++) {
          sheet.getRange(0, i).setValue(names.getElementAsString(i));
       }
+
 
       Iterator<SEXP> it = dataFrame.iterator();
       int colIdx = 0;
