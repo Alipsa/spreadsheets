@@ -1,5 +1,5 @@
 /target/
 /.idea/
-/excel-utils.iml
-/spreadsheets.iml
+/*.iml
 /*.xlsx
+/*.ods

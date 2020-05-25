@@ -2,8 +2,7 @@
 
 This package will give you the ability to work with (read, write) spreadsheets.
 
-It currently supports reading of excel files but will be able to handle
-Open Office spreadsheets as well soon.
+It supports reading of excel and Open Office/Libre Office spreadsheets files.
 
 ## Usage
 * All indexes start with 1 (as is common practice in R), e.g. sheetNumber 1 refers to the 
