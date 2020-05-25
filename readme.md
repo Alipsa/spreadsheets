@@ -75,7 +75,7 @@ The resulting dataframe will read all values as character strings so you will li
 massage the data efter the import to get what you want. e.g.
 
 ```r
-excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg)
+excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg))
 ```
 
 In the example above, the regional setting of the excel sheet used comma as the decimal separator so we replace them with 
