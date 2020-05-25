@@ -80,6 +80,9 @@ public class ExcelValueExtractor extends AbstractValueExtractor {
          case BLANK:
             return null;
          case NUMERIC:
+            if (DateUtil.isCellDateFormatted(cell)) {
+               return SpreadsheetUtil.dateTimeFormatter.format(cell.getLocalDateTimeCellValue());
+            }
             return cell.getNumericCellValue();
          case BOOLEAN:
             return cell.getBooleanCellValue();
@@ -97,6 +100,9 @@ public class ExcelValueExtractor extends AbstractValueExtractor {
          case BLANK:
             return null;
          case NUMERIC:
+            if (DateUtil.isCellDateFormatted(cell)) {
+               return cell.getLocalDateTimeCellValue();
+            }
             return evaluator.evaluate(cell).getNumberValue();
          case BOOLEAN:
             return evaluator.evaluate(cell).getBooleanValue();

@@ -26,6 +26,10 @@ public class ExcelImporter {
       return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
    }
 
+   public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
+      return importExcel(filePath, sheetNumber, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
+   }
+
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
       File excelFile = checkFilePath(filePath);
       List<String> header = new ArrayList<>();

@@ -3,6 +3,10 @@ package se.alipsa.excelutils;
 import org.junit.jupiter.api.Test;
 import org.renjin.sexp.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +66,29 @@ public class OdsImporterTest {
       assertEquals("1", columnList.get(0), "First column name");
       assertEquals("11", columnList.get(10), "11:th column name");
       assertEquals(109, vec.getElementAsVector("4").getElementAsInt(31));
+   }
+
+   @Test
+   public void testImportComplexOds() throws Exception {
+      ListVector vec = OdsImporter.importOds(
+         "complex.ods",
+         1,
+         1,
+         7,
+         "A",
+         "F",
+         true
+      );
+      int row = 2;
+      assertEquals("2020-05-03", vec.getElementAsVector("date").getElementAsString(row));
+
+      LocalDateTime localDateTime = LocalDateTime.parse(vec.getElementAsVector("datetime").getElementAsString(row),
+         SpreadsheetUtil.dateTimeFormatter);
+      assertEquals("2020-05-03 15:43:12", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(localDateTime));
+      assertEquals(new BigDecimal("102").intValue(), new BigDecimal(vec.getElementAsVector("integer").getElementAsString(row)).intValue());
+      assertEquals("5.222", vec.getElementAsVector("decimal").getElementAsString(row));
+      assertEquals("three", vec.getElementAsVector("string").getElementAsString(row));
+      assertEquals("96.778", vec.getElementAsVector("Numdiff").getElementAsString(row));
    }
 
    public static List<String> toHeaderList(ListVector df) {

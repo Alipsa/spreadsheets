@@ -1,6 +1,12 @@
 package se.alipsa.excelutils;
 
+import org.apache.poi.ss.usermodel.DateUtil;
+
+import java.time.format.DateTimeFormatter;
+
 public class SpreadsheetUtil {
+
+   public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
    public static int toColumnNumber(String name) {
       if (name == null) {
@@ -25,5 +31,10 @@ public class SpreadsheetUtil {
          number /= 26;
       }
       return sb.reverse().toString();
+   }
+
+   public static String toDateString(double dateNumber, String... pattern) {
+      DateTimeFormatter formatter = pattern.length > 0 ? DateTimeFormatter.ofPattern(pattern[0]) : dateTimeFormatter;
+      return formatter.format(DateUtil.getLocalDateTime(dateNumber));
    }
 }

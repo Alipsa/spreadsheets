@@ -78,7 +78,6 @@ public class OdsExporter {
          sheet.getRange(0, i).setValue(names.getElementAsString(i));
       }
 
-
       Iterator<SEXP> it = dataFrame.iterator();
       int colIdx = 0;
       while (it.hasNext()) {

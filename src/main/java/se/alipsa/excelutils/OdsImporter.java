@@ -25,6 +25,10 @@ public class OdsImporter {
       return importOds(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
    }
 
+   public static ListVector importOds(String filePath, int sheetNum, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
+      return importOds(filePath, sheetNum, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
+   }
+
    public static ListVector importOds(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
       File excelFile = checkFilePath(filePath);
       List<String> header = new ArrayList<>();

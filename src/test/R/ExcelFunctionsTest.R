@@ -80,6 +80,24 @@ test.importExcelWithHeaderNames <- function() {
   assertThat(as.numeric(excelDf[,4]), equalTo(mtcars$hp))
 }
 
+test.importComplexExcel <- function() {
+  excelDf <- importSpreadsheet(
+    filePath = "complex.xlsx",
+    sheet = 1,
+    startRow = 1,
+    endRow = 7,
+    startColumn = "A",
+    endColumn = "F",
+    firstRowAsColumnNames = TRUE
+  )
+  assertThat(excelDf[3,1], equalTo("2020-05-03"))
+  assertThat(excelDf[3,2], equalTo("2020-05-03 15:43:12"))
+  assertThat(excelDf[3,3], equalTo("102"))
+  assertThat(excelDf[3,4], equalTo("5.222"))
+  assertThat(excelDf[3,5], equalTo("three"))
+  assertThat(excelDf[3,6], equalTo("96.778"))
+}
+
 test.columnNameConversions <- function() {
   assertThat(columnIndex("N"), equalTo(14))
   assertThat(columnIndex("AF"), equalTo(32))

@@ -1,5 +1,7 @@
 package se.alipsa.excelutils;
 
+import java.time.LocalDateTime;
+
 public class AbstractValueExtractor {
 
    public double getDouble(Object val) {
@@ -69,6 +71,9 @@ public class AbstractValueExtractor {
    }
 
    public String getString(Object val) {
+      if (val instanceof LocalDateTime) {
+
+      }
       return String.valueOf(val);
    }
 }

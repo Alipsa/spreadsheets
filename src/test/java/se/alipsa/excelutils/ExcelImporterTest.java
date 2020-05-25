@@ -3,6 +3,10 @@ package se.alipsa.excelutils;
 import org.junit.jupiter.api.Test;
 import org.renjin.sexp.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -78,5 +82,29 @@ public class ExcelImporterTest {
          }
       }
       return colList;
+   }
+
+   @Test
+   public void testImportComplexExcel() throws Exception {
+      ListVector vec = ExcelImporter.importExcel(
+         "complex.xlsx",
+         1,
+         1,
+         7,
+         "A",
+         "F",
+         true
+      );
+      int row = 2;
+      LocalDate theDate = LocalDate.from(SpreadsheetUtil.dateTimeFormatter.parse(vec.getElementAsVector("date").getElementAsString(row)));
+      assertEquals("2020-05-03", DateTimeFormatter.ofPattern("yyyy-MM-dd").format(theDate));
+
+      LocalDateTime localDateTime = LocalDateTime.parse(vec.getElementAsVector("datetime").getElementAsString(row),
+         SpreadsheetUtil.dateTimeFormatter);
+      assertEquals("2020-05-03 15:43:12", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(localDateTime));
+      assertEquals(new BigDecimal("102").intValue(), new BigDecimal(vec.getElementAsVector("integer").getElementAsString(row)).intValue());
+      assertEquals("5.222", vec.getElementAsVector("decimal").getElementAsString(row));
+      assertEquals("three", vec.getElementAsVector("string").getElementAsString(row));
+      assertEquals("96.778", vec.getElementAsVector("Numdiff").getElementAsString(row));
    }
 }
