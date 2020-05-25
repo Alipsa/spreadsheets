@@ -90,9 +90,10 @@ test.importComplexExcel <- function() {
     endColumn = "F",
     firstRowAsColumnNames = TRUE
   )
-  assertThat(excelDf[3,1], equalTo("2020-05-03"))
-  assertThat(excelDf[3,2], equalTo("2020-05-03 15:43:12"))
-  assertThat(excelDf[3,3], equalTo("102"))
+  date <- as.Date(as.POSIXct(excelDf[3,1], 'GMT'))
+  assertThat(date, equalTo("2020-05-03"))
+  assertThat(as.POSIXct(excelDf[3,2], 'GMT'), equalTo(as.POSIXct("2020-05-03 15:43:12", 'GMT')))
+  assertThat(as.integer(excelDf[3,3]), equalTo(102L))
   assertThat(excelDf[3,4], equalTo("5.222"))
   assertThat(excelDf[3,5], equalTo("three"))
   assertThat(excelDf[3,6], equalTo("96.778"))
