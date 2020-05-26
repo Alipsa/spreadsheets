@@ -71,16 +71,6 @@ excelDf <- importSpreadsheet(
     firstRowAsColumnNames = TRUE
   )
 ```
-The resulting dataframe will read all values as character strings so you will likely need to
-massage the data efter the import to get what you want. e.g.
-
-```r
-excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg))
-```
-
-In the example above, the regional setting of the excel sheet used comma as the decimal separator so we replace them with 
-dots to we can then convert them to numerics.
-
 The parameters are as follows:
 * filePath: The filePath to the excel file to import. It must be a path to file that is physically accessible. A remote url will not work.
 * sheet: The sheet index (index starting with 1) for the sheet to import. Can alternatively be the name of the sheet. Default: 1 
@@ -89,6 +79,31 @@ The parameters are as follows:
 * startColumn: The column index (or name e.g. "A") to start reading from. default: 1
 * endColumn: The last column index (or name) to read from.
 * firstRowAsColumnNames: If true then use the values of the first column as column names for the data.frame
+
+The resulting dataframe will read all values as character strings so you will likely need to
+massage the data efter the import to get what you want. e.g.
+```r
+excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg))
+```
+In the example above, the regional setting of the excel sheet used comma as the decimal separator so we replace them with 
+dots to we can then convert them to numerics.
+
+Dates are converted to strings in the format yyyy-MM-dd (only for odf imports for dates without time) 
+or yyyy-MM-dd HH:mm:ss.SSS which is the default format for POSIXct and POSIXlt so you can do:
+```r
+library("se.alipsa:spreadsheets")
+timeMeasuresDf <- importSpreadsheet(
+  filePath = "E:\\some\\path\\data\\timeMeasures.xlsx",
+  sheet = 1,
+  startRow = 1,
+  endRow = 7,
+  startColumn = "A",
+  endColumn = "F",
+  firstRowAsColumnNames = TRUE
+)
+# change the startDate column to Dates: 
+timeMeasuresDf$startDate <- as.Date(as.POSIXlt(timeMeasuresDf$startDate))
+```
 
 ### exportSpreadsheet: export an excel or Open Office spreadsheet
 
