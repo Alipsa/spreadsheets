@@ -23,9 +23,7 @@ public class ExcelExporter {
          System.err.println("Non typical extension detected, will save as xlsx format");
       }
 
-      boolean asXssf = true;
-
-      if (lcFilePath.endsWith(".xls")) asXssf = false;
+      boolean asXssf = isXssf(lcFilePath);
 
       try(Workbook workbook = WorkbookFactory.create(asXssf)) {
          Sheet sheet = workbook.createSheet();
@@ -41,6 +39,13 @@ public class ExcelExporter {
       }
    }
 
+   private static boolean isXssf(String filePath) {
+      String lcFilePath = filePath.toLowerCase();
+
+      return !lcFilePath.endsWith(".xls");
+
+   }
+
    /** upsert: Create new or update existing excel, adding or updating a sheet with the name specified */
    public static boolean exportExcel(ListVector dataFrame, String filePath, String sheetName) {
       File file = new File(filePath);
@@ -52,7 +57,7 @@ public class ExcelExporter {
             fis = new FileInputStream(file);
             workbook = WorkbookFactory.create(fis);
          } else {
-            workbook = WorkbookFactory.create(file);
+            workbook = WorkbookFactory.create(isXssf(filePath));
          }
 
          Sheet sheet = workbook.getSheet(sheetName);

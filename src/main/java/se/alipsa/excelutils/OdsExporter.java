@@ -42,7 +42,12 @@ public class OdsExporter {
       File file = new File(filePath);
 
       try {
-         SpreadSheet spreadSheet = new SpreadSheet(file);
+         SpreadSheet spreadSheet;
+         if (file.exists()) {
+            spreadSheet = new SpreadSheet(file);
+         } else {
+            spreadSheet = new SpreadSheet();
+         }
 
          Sheet sheet = spreadSheet.getSheet(sheetName);
          if (sheet == null) {

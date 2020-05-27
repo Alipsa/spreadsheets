@@ -17,19 +17,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class OdsExporterTest {
 
    @Test
-   public void testExport() throws ScriptException, IOException {
+   public void testExport() throws Exception {
       RenjinScriptEngine engine = new RenjinScriptEngineFactory().getScriptEngine();
       ListVector mtcars = (ListVector)engine.eval("mtcars");
       assertEquals(11, mtcars.length());
 
-      File file = new File("mtcars.ods");
+      File file = File.createTempFile("mtcars", ".ods");
       if (file.exists()) file.delete();
 
       System.out.println("Saving to " + file.getAbsolutePath());
 
-      OdsExporter.exportOds(mtcars, file.getName());
+      OdsExporter.exportOds(mtcars, file.getAbsolutePath());
       assertTrue(file.exists());
-      OdsExporter.exportOds(mtcars, file.getName(), "1");
+      OdsExporter.exportOds(mtcars, file.getAbsolutePath(), "1");
 
       SpreadSheet spreadSheet = new SpreadSheet(file);
       assertEquals(1, spreadSheet.getNumSheets(), "Number of sheets");
@@ -42,7 +42,7 @@ public class OdsExporterTest {
       assertEquals(2, ext.getInt(lastRow,10));
 
       ListVector iris = (ListVector)engine.eval("iris");
-      OdsExporter.exportOds(iris, file.getName(), "iris");
+      OdsExporter.exportOds(iris, file.getAbsolutePath(), "iris");
 
       spreadSheet = new SpreadSheet(file);
 
@@ -58,11 +58,8 @@ public class OdsExporterTest {
       assertEquals(1.8, ext.getDouble(lastRow,3), 0.00001);
       assertEquals("virginica", ext.getString(lastRow,4));
 
-      try {
-         assertEquals(52, OdsReader.findRowNum(file.getName(), "iris", SpreadsheetUtil.toColumnNumber("E"), "versicolor"));
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
+      assertEquals(52, OdsReader.findRowNum(file.getAbsolutePath(), "iris", SpreadsheetUtil.toColumnNumber("E"), "versicolor"));
 
+      file.deleteOnExit();
    }
 }

@@ -1,6 +1,10 @@
 library('hamcrest')
 library('se.alipsa:spreadsheets')
 
+wdfile <- function(fileName) {
+  paste0(getwd(), "/", fileName)
+}
+
 findRowNumSunnyTest <- function(fileName) {
   rowNum <- findRowNumber(fileName = fileName, sheet = 1, column = 1, "Iris")
   assertThat(rowNum, equalTo(36))
@@ -10,11 +14,11 @@ findRowNumSunnyTest <- function(fileName) {
 }
 
 test.findRowNumSunnyExcel <- function() {
-  findRowNumSunnyTest(paste0(getwd(), "/df.xlsx"))
+  findRowNumSunnyTest(wdfile("df.xlsx"))
 }
 
 test.findRowNumSunnyOds <- function() {
-  findRowNumSunnyTest(paste0(getwd(), "/df.ods"))
+  findRowNumSunnyTest(wdfile("df.ods"))
 }
 
 finRowNumRainy <- function(notExistingFileName, fileName) {
@@ -32,10 +36,10 @@ finRowNumRainy <- function(notExistingFileName, fileName) {
 }
 
 test.finRowNumRainyExcel <- function() {
-  finRowNumRainy("doesnotexist.xlsx", "df.xlsx")
+  finRowNumRainy("doesnotexist.xlsx", wdfile("df.xlsx"))
 }
 test.finRowNumRainyOds <- function() {
-  finRowNumRainy("doesnotexist.ods", "df.ods")
+  finRowNumRainy("doesnotexist.ods", wdfile("df.ods"))
 }
 
 findColumnsSunny <- function(fileName) {
@@ -47,10 +51,10 @@ findColumnsSunny <- function(fileName) {
 }
 
 test.findColumnsSunnyExcel <- function() {
-  findColumnsSunny("df.xlsx")
+  findColumnsSunny(wdfile("df.xlsx"))
 }
 test.findColumnsSunnyOds <- function() {
-  findColumnsSunny("df.ods")
+  findColumnsSunny(wdfile("df.ods"))
 }
 
 importWithHeaderRow <- function(fileName) {
@@ -71,11 +75,11 @@ importWithHeaderRow <- function(fileName) {
 }
 
 test.importWithHeaderRowExcel <- function() {
-  importWithHeaderRow("df.xlsx")
+  importWithHeaderRow(wdfile("df.xlsx"))
 }
 
 test.importWithHeaderRowOds <- function() {
-  importWithHeaderRow("df.ods")
+  importWithHeaderRow(wdfile("df.ods"))
 }
 
 importNoHeaderRow <- function(fileName) {
@@ -94,10 +98,10 @@ importNoHeaderRow <- function(fileName) {
 }
 
 test.importNoHeaderRowExcel <- function() {
-  importNoHeaderRow("df.xlsx")
+  importNoHeaderRow(wdfile("df.xlsx"))
 }
 test.importNoHeaderRowOds <- function() {
-  importNoHeaderRow("df.ods")
+  importNoHeaderRow(wdfile("df.ods"))
 }
 
 importWithHeaderNames <- function(fileName) {
@@ -116,10 +120,10 @@ importWithHeaderNames <- function(fileName) {
 }
 
 test.importWithHeaderNamesExcel <- function() {
-  importWithHeaderNames("df.xlsx")
+  importWithHeaderNames(wdfile("df.xlsx"))
 }
 test.importWithHeaderNamesOds <- function() {
-  importWithHeaderNames("df.ods")
+  importWithHeaderNames(wdfile("df.ods"))
 }
 
 importComplex <- function(fileName) {
@@ -142,11 +146,11 @@ importComplex <- function(fileName) {
 }
 
 test.importComplexExcel <- function() {
-  importComplex("complex.xlsx")
+  importComplex(wdfile("complex.xlsx"))
 }
 
 test.importComplexOds <- function() {
-  importComplex("complex.ods")
+  importComplex(wdfile("complex.ods"))
 }
 
 test.columnNameConversions <- function() {
@@ -169,15 +173,16 @@ exportNew <- function(fileName) {
 }
 
 test.exportNewExcel <- function() {
-  exportNew(paste0(getwd(), "/test.xlsx"))
+  exportNew(wdfile("test.xlsx"))
 }
 
 test.exportNewOds <- function() {
-  exportNew(paste0(getwd(), "/test.ods"))
+  exportNew(wdfile("test.ods"))
 }
 
 update <- function(fileName) {
-  result <- exportSpreadsheet(mtcars, fileName, TRUE)
+  if (file.exists(fileName)) file.remove(fileName)
+  result <- exportSpreadsheet(mtcars, fileName)
   assertThat(result, equalTo(TRUE))
   result <- exportSpreadsheet(iris, fileName, "iris")
   assertThat(result, equalTo(TRUE))
@@ -188,9 +193,9 @@ update <- function(fileName) {
 }
 
 test.updateExcel <- function() {
-  update("test2.xlsx")
+  update(wdfile("test2.xlsx"))
 }
 
 test.updateOds <- function() {
-  update("test2.ods")
+  update(wdfile("test2.ods"))
 }
