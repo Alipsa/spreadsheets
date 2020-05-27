@@ -88,8 +88,7 @@ excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg))
 In the example above, the regional setting of the excel sheet used comma as the decimal separator so we replace them with 
 dots to we can then convert them to numerics.
 
-Dates are converted to strings in the format yyyy-MM-dd (only for odf imports for dates without time) 
-or yyyy-MM-dd HH:mm:ss.SSS which is the default format for POSIXct and POSIXlt so you can do:
+Dates are converted to strings in the format yyyy-MM-dd HH:mm:ss.SSS which is the default format for POSIXct and POSIXlt so you can do:
 ```r
 library("se.alipsa:spreadsheets")
 timeMeasuresDf <- importSpreadsheet(

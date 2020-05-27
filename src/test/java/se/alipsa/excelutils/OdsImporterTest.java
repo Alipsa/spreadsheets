@@ -80,7 +80,9 @@ public class OdsImporterTest {
          true
       );
       int row = 2;
-      assertEquals("2020-05-03", vec.getElementAsVector("date").getElementAsString(row));
+
+      LocalDate theDate = LocalDate.from(SpreadsheetUtil.dateTimeFormatter.parse(vec.getElementAsVector("date").getElementAsString(row)));
+      assertEquals("2020-05-03", DateTimeFormatter.ofPattern("yyyy-MM-dd").format(theDate));
 
       LocalDateTime localDateTime = LocalDateTime.parse(vec.getElementAsVector("datetime").getElementAsString(row),
          SpreadsheetUtil.dateTimeFormatter);

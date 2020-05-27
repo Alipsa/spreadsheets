@@ -3,6 +3,7 @@ package se.alipsa.excelutils;
 import com.github.miachm.sods.Range;
 import com.github.miachm.sods.Sheet;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class OdsValueExtractor  extends AbstractValueExtractor {
@@ -42,6 +43,9 @@ public class OdsValueExtractor  extends AbstractValueExtractor {
       Object val = range.getValue();
       if (val instanceof LocalDateTime) {
          return SpreadsheetUtil.dateTimeFormatter.format((LocalDateTime)val);
+      }
+      if (val instanceof LocalDate) {
+         return SpreadsheetUtil.dateTimeFormatter.format(((LocalDate) val).atStartOfDay());
       }
       return String.valueOf(val);
    }
