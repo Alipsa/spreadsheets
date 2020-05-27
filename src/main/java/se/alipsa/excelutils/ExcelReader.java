@@ -9,27 +9,27 @@ import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
 public class ExcelReader {
 
-   static FormulaEvaluator evaluator;
-   static Workbook workbook;
+   private static FormulaEvaluator evaluator;
+   private static Workbook workbook;
 
    private ExcelReader() {
       // Prevent instantiation
    }
 
-   public static void setExcel(String filePath) throws Exception {
+   private static void setExcel(String filePath) throws Exception {
       File excelFile = checkFilePath(filePath);
       workbook = WorkbookFactory.create(excelFile);
       evaluator = workbook.getCreationHelper().createFormulaEvaluator();
    }
 
-   public static void close() throws IOException {
+   private static void close() throws IOException {
       workbook.close();
       workbook = null;
       evaluator = null;
    }
 
    /**
-    *
+    * Find the first row index matching the content.
     * @param filePath the excel file
     * @param sheetNumber the sheet index (1 indexed)
     * @param colNumber the column number (1 indexed)
@@ -50,10 +50,28 @@ public class ExcelReader {
       }
    }
 
+   /**
+    * Find the first row index matching the content.
+    * @param filePath the excel file
+    * @param sheetNumber the sheet index (1 indexed)
+    * @param colName the column name (A for first column etc.)
+    * @param content the string to search for
+    * @return the Row as seen in Excel (1 is first row)
+    * @throws Exception if something goes wrong
+    */
    public static int findRowNum(String filePath, int sheetNumber, String colName, String content) throws Exception {
       return findRowNum(filePath, sheetNumber, SpreadsheetUtil.toColumnNumber(colName), content);
    }
 
+   /**
+    * Find the first row index matching the content.
+    * @param filePath the excel file
+    * @param sheetName the name of the sheet to search in
+    * @param colName the column name (A for first column etc.)
+    * @param content the string to search for
+    * @return the Row as seen in Excel (1 is first row)
+    * @throws Exception if something goes wrong
+    */
    public static int findRowNum(String filePath, String sheetName, String colName, String content) throws Exception {
       return findRowNum(filePath, sheetName, SpreadsheetUtil.toColumnNumber(colName), content);
    }
@@ -80,13 +98,6 @@ public class ExcelReader {
       }
    }
 
-   /**
-    *
-    * @param sheet the sheet to search in
-    * @param colNumber the column number (1 indexed)
-    * @param content the string to search for
-    * @return the Row as seen in Excel (1 is first row)
-    */
    private static int findRowNum(Sheet sheet, int colNumber, String content) {
       ExcelValueExtractor ext = new ExcelValueExtractor(sheet);
       int poiColNum = colNumber -1;
@@ -103,13 +114,13 @@ public class ExcelReader {
    }
 
    /**
-    *
+    * Find the first column index matching the content criteria
     * @param filePath the excel file
     * @param sheetNumber the sheet index (1 indexed)
     * @param rowNumber the row number (1 indexed)
     * @param content the string to search for
     * @return the row number that matched or -1 if not found
-    * @throws Exception
+    * @throws Exception if some read problem occurs
     */
    public static int findColNum(String filePath, int sheetNumber, int rowNumber, String content) throws Exception {
       try {
@@ -129,6 +140,8 @@ public class ExcelReader {
     * @param sheetName the name of the sheet
     * @param rowNumber the row number (1 indexed)
     * @param content the string to search for
+    * @return the row number that matched or -1 if not found
+    * @throws Exception if the file cannot be read
     */
    public static int findColNum(String filePath, String sheetName, int rowNumber, String content) throws Exception {
       try {
@@ -144,6 +157,7 @@ public class ExcelReader {
    }
 
    /**
+    * Find the first column index matching the content criteria
     * @param sheet the Sheet to search
     * @param rowNumber the row number (1 indexed)
     * @param content the string to search for

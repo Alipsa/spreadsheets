@@ -10,6 +10,12 @@ import java.util.List;
 
 public class FileUtil {
 
+   /**
+    * Verify that the filePath exists and is reachable
+    * @param filePath the path + file name of the resource to find
+    * @return a File of found
+    * @throws Exception if the filePath cannot be found
+    */
    public static File checkFilePath(String filePath) throws Exception {
       File excelFile;
       URL url = getResourceUrl(filePath);
@@ -31,6 +37,8 @@ public class FileUtil {
     * Find a resource using available class loaders.
     * It will also load resources/files from the
     * absolute path of the file system (not only the classpath's).
+    * @param resource the resource to search for
+    * @return an url to the resource or null if not found
     */
    public static URL getResourceUrl(String resource) {
       final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();

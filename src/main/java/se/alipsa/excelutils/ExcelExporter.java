@@ -10,7 +10,13 @@ import java.util.Map;
 
 public class ExcelExporter {
 
-   /** Create a new excel file */
+   /**
+    * Create a new excel file.
+    *
+    * @param dataFrame the data.frame to export
+    * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
+    * @return true if successful, false if not written (file exists or cannotbe written to)
+    */
    public static boolean exportExcel(ListVector dataFrame, String filePath) {
       File file = new File(filePath);
       if (file.exists()) {
@@ -46,7 +52,14 @@ public class ExcelExporter {
 
    }
 
-   /** upsert: Create new or update existing excel, adding or updating a sheet with the name specified */
+   /**
+    * upsert: Create new or update existing excel, adding or updating a sheet with the name specified
+    *
+    * @param dataFrame the data.frame to export
+    * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
+    * @param sheetName the name of the sheet to write to
+    * @return true if successful, false if not written (file exists or cannotbe written to)
+    */
    public static boolean exportExcel(ListVector dataFrame, String filePath, String sheetName) {
       File file = new File(filePath);
 

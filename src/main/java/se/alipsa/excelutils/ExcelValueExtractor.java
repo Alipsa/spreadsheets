@@ -71,7 +71,11 @@ public class ExcelValueExtractor extends AbstractValueExtractor {
       return getBoolean(getObject(row.getCell(column)));
    }
 
-   /** get the value from a Excel cell */
+   /**
+    * get the value from a Excel cell
+    * @param cell the cell to extract the value from
+    * @return the value
+    */
    public Object getObject(Cell cell) {
       if (cell == null) {
          return null;
