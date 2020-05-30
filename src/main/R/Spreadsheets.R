@@ -15,7 +15,7 @@ findRowNumber <- function(fileName, sheet = 1, column, cellContent) {
     if (is.numeric(column)) {
      column <- as.integer(column)
     }
-    if (endsWith(tolower(fileName), ".ods") | endsWith(tolower(fileName), ".ods")) {
+    if (endsWith(tolower(fileName), ".ods")) {
       rowNum <- OdsReader$findRowNum(fileName, sheet, column, cellContent)
     } else {
       rowNum <- ExcelReader$findRowNum(fileName, sheet, column, cellContent)
@@ -40,7 +40,7 @@ findColumnNumber <- function(fileName, sheet = 1, row, cellContent) {
       sheet <- as.integer(sheet)
     }
     rowNum <- as.integer(row)
-    if (endsWith(tolower(fileName), ".ods") | endsWith(tolower(fileName), ".ods")) {
+    if (endsWith(tolower(fileName), ".ods")) {
       colNum <- OdsReader$findColNum(fileName, sheet, rowNum, cellContent)
     } else {
       colNum <- ExcelReader$findColNum(fileName, sheet, rowNum, cellContent)
@@ -64,6 +64,14 @@ columnName <- function(columnIndex) {
     stop("columnIndex parameter must be a number")
   }
   SpreadsheetUtil$toColumnName(as.integer(columnIndex))
+}
+
+getSheetNames <- function(filePath) {
+  if (endsWith(tolower(filePath), ".ods")) {
+    return(OdsReader$getSheetNames(filePath))
+  } else {
+    return(ExcelReader$getSheetNames(filePath))
+  }
 }
 
 importSpreadsheet <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn = 1, endColumn,
@@ -96,7 +104,7 @@ importSpreadsheet <- function(filePath, sheet = 1, startRow = 1, endRow, startCo
     endColumn <- as.integer(endColumn)
   }
 
-  if (endsWith(tolower(filePath), ".ods") | endsWith(tolower(filePath), ".ods")) {
+  if (endsWith(tolower(filePath), ".ods")) {
     return(importOds(filePath = filePath, sheet = sheet, startRow = startRow, endRow = endRow, startColumn = startColumn,
                      endColumn = endColumn, firstRowAsColumnNames = firstRowAsColumnNames, columnNames = columnNames))
   } else {
@@ -161,7 +169,10 @@ importOds <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn = 1
 }
 
 exportSpreadsheet <- function(df, filePath, sheet = NA) {
-  if (endsWith(tolower(filePath), ".ods") | endsWith(tolower(filePath), ".ods")) {
+  if (!dir.exists(dirname(filePath))) {
+    stop(paste(dirname(filePath), "does not exists, create it first before exporting a file there!"))
+  }
+  if (endsWith(tolower(filePath), ".ods")) {
     exportOds(df, filePath, sheet)
   } else {
     exportExcel(df, filePath, sheet)
@@ -172,7 +183,7 @@ exportExcel <- function(df, filePath, sheet = NA) {
   if (is.na(sheet)) {
     return(ExcelExporter$exportExcel(df, filePath))
   } else {
-    return(ExcelExporter$exportExcel(df, filePath, sheet))
+    return(ExcelExporter$exportExcel(df, sheet, filePath ))
   }
 }
 
@@ -180,7 +191,46 @@ exportOds <- function(df, filePath, sheet = NA) {
   if (is.na(sheet)) {
     return(OdsExporter$exportOds(df, filePath))
   } else {
-    return(OdsExporter$exportOds(df, filePath, sheet))
+    return(OdsExporter$exportOds(df, sheet, filePath))
+  }
+}
+
+exportSpreadsheets <- function(dfList, sheetNames, filePath) {
+  if (class(dfList) == "NULL" | class(dfList) == "NA") {
+    stop("dfList must be specified")
+  }
+  if (class(filePath) == "NULL" | class(filePath) == "NA") {
+    stop("filePath must be specified")
+  }
+  if (class(sheetNames) == "NULL" | class(sheetNames) == "NA") {
+    stop("sheetNames not specified")
+  }
+
+  if (!is.list(dfList)) {
+    stop(paste("dfList must be a list of data.frames but is", class(dfList)))
+  }
+
+  if (!is.character(filePath)) {
+    stop(paste("filePath must be a character string but is ", class(filePath)))
+  }
+
+  if (!is.character(sheetNames)) {
+    stop(paste("sheetNames must be a vector of character strings but is ", class(sheetNames)))
+  }
+
+  if (length(dfList) != length(sheetNames)) {
+    stop(paste("You need to supply a name for each data.frame. Number of data.frames =", length(dfList),
+               ", number of sheet names =", length(sheetNames)))
+  }
+
+  if (!dir.exists(dirname(filePath))) {
+    stop(paste(dirname(filePath), "does not exists, create it first before exporting a file there!"))
+  }
+
+  if (endsWith(tolower(filePath), ".ods")) {
+    return(OdsExporter$exportOdsSheets(dfList, sheetNames, filePath))
+  } else {
+    return(ExcelExporter$exportExcelSheets(dfList, sheetNames, filePath))
   }
 }
 

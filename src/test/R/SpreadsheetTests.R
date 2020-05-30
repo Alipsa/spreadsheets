@@ -199,3 +199,26 @@ test.updateExcel <- function() {
 test.updateOds <- function() {
   update(wdfile("test2.ods"))
 }
+
+exportSpreadsheetsTest <- function(fileName) {
+  if (file.exists(fileName)) file.remove(fileName)
+  sheetNames <- c("mtcars", "iris", "PlantGrowth")
+  result <- exportSpreadsheets(list(mtcars, iris, PlantGrowth), sheetNames, fileName)
+  assertThat(result, equalTo(TRUE))
+  sheets <- getSheetNames(fileName)
+  assertThat(sheetNames, equalTo(sheets))
+}
+
+test.exportSpreadsheetsExcel <- function() {
+  exportSpreadsheetsTest("testSheets.xlsx")
+}
+
+test.exportSpreadsheetsOds <- function() {
+  exportSpreadsheetsTest("testSheets.ods")
+}
+
+test.exportSpreadsheetRainy <- function() {
+  assertThat(exportSpreadsheets(NA, sheetNames, fileName), throwsError())
+
+  assertThat(exportSpreadsheets(list(mtcars), NULL, fileName), throwsError())
+}

@@ -42,7 +42,7 @@ public class OdsExporterTest {
       assertEquals(2, ext.getInt(lastRow,10));
 
       ListVector iris = (ListVector)engine.eval("iris");
-      OdsExporter.exportOds(iris, file.getAbsolutePath(), "iris");
+      OdsExporter.exportOds(iris, "iris", file.getAbsolutePath());
 
       spreadSheet = new SpreadSheet(file);
 

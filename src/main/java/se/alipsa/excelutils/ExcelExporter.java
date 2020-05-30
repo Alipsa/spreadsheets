@@ -15,7 +15,7 @@ public class ExcelExporter {
     *
     * @param dataFrame the data.frame to export
     * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
-    * @return true if successful, false if not written (file exists or cannotbe written to)
+    * @return true if successful, false if not written (file exists or cannot be written to)
     */
    public static boolean exportExcel(ListVector dataFrame, String filePath) {
       File file = new File(filePath);
@@ -58,9 +58,21 @@ public class ExcelExporter {
     * @param dataFrame the data.frame to export
     * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
     * @param sheetName the name of the sheet to write to
-    * @return true if successful, false if not written (file exists or cannotbe written to)
+    * @return true if successful, false if not written (file exists or cannot be written to)
     */
-   public static boolean exportExcel(ListVector dataFrame, String filePath, String sheetName) {
+   public static boolean exportExcel(ListVector dataFrame, String sheetName, String filePath) {
+      return exportExcelSheets(new ListVector(dataFrame), new StringArrayVector(sheetName), filePath);
+   }
+
+   private static void upsertSheet(ListVector dataFrame, String sheetName, Workbook workbook) {
+      Sheet sheet = workbook.getSheet(sheetName);
+      if (sheet == null) {
+         sheet = workbook.createSheet(sheetName);
+      }
+      buildSheet(dataFrame, sheet);
+   }
+
+   public static boolean exportExcelSheets(ListVector dataFrames, StringArrayVector sheetNames, String filePath) {
       File file = new File(filePath);
 
       try {
@@ -73,11 +85,14 @@ public class ExcelExporter {
             workbook = WorkbookFactory.create(isXssf(filePath));
          }
 
-         Sheet sheet = workbook.getSheet(sheetName);
-         if (sheet == null) {
-            sheet = workbook.createSheet(sheetName);
+         for (int i = 0; i < dataFrames.length(); i++) {
+            ListVector dataFrame = (ListVector)dataFrames.get(i);
+            String sheetName = sheetNames.toArray()[i];
+            //System.out.println("Writing sheet " + sheetName + " with a dataframe with "
+            //   + dataFrame.maxElementLength() + " rows and " + dataFrame.length() + " columns");
+            upsertSheet(dataFrame, sheetName, workbook);
          }
-         buildSheet(dataFrame, sheet);
+
          if (fis != null) {
             fis.close();
          }
@@ -85,6 +100,7 @@ public class ExcelExporter {
             workbook.write(fos);
          }
          workbook.close();
+         //System.out.println(file.getAbsolutePath() + " created");
          return true;
       } catch (IOException e) {
          System.err.println("Failed to create excel file: " + e.toString());

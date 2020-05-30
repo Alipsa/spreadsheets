@@ -1,9 +1,12 @@
 package se.alipsa.excelutils;
 
 import org.apache.poi.ss.usermodel.*;
+import org.renjin.sexp.StringArrayVector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
@@ -175,5 +178,14 @@ public class ExcelReader {
          }
       }
       return -1;
+   }
+
+   public static StringArrayVector getSheetNames(String filePath) throws Exception {
+      setExcel(filePath);
+      List<String> names = new ArrayList<>();
+      for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+         names.add(workbook.getSheetAt(i).getSheetName());
+      }
+      return new StringArrayVector(names);
    }
 }

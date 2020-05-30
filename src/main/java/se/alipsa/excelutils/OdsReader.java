@@ -2,8 +2,11 @@ package se.alipsa.excelutils;
 
 import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
+import org.renjin.sexp.StringArrayVector;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
@@ -128,5 +131,12 @@ public class OdsReader {
          }
       }
       return -1;
+   }
+
+   public static StringArrayVector getSheetNames(String filePath) throws Exception {
+      setOds(filePath);
+      List<String> names = new ArrayList<>();
+      spreadSheet.getSheets().forEach(s -> names.add(s.getName()));
+      return new StringArrayVector(names);
    }
 }

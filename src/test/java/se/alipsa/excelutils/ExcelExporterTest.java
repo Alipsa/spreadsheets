@@ -32,7 +32,7 @@ public class ExcelExporterTest {
 
       ExcelExporter.exportExcel(mtcars, file.getAbsolutePath());
       assertTrue(file.exists());
-      ExcelExporter.exportExcel(mtcars, file.getAbsolutePath(), "Sheet0");
+      ExcelExporter.exportExcel(mtcars, "Sheet0", file.getAbsolutePath());
 
 
       try(Workbook workbook = WorkbookFactory.create(file)) {
@@ -45,7 +45,7 @@ public class ExcelExporterTest {
       }
 
       ListVector iris = (ListVector)engine.eval("iris");
-      ExcelExporter.exportExcel(iris, file.getAbsolutePath(), "iris");
+      ExcelExporter.exportExcel(iris, "iris", file.getAbsolutePath());
       try(Workbook workbook = WorkbookFactory.create(file)) {
          assertEquals(2, workbook.getNumberOfSheets(), "Number of sheets");
          assertEquals(0, workbook.getSheetIndex("Sheet0"), "mtcars sheet index");

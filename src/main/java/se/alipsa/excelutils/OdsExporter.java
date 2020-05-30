@@ -51,7 +51,11 @@ public class OdsExporter {
     * @param sheetName the name of the sheet to write to
     * @return true if successful, false if not written (file exists or cannotbe written to)
     */
-   public static boolean exportOds(ListVector dataFrame, String filePath, String sheetName) {
+   public static boolean exportOds(ListVector dataFrame, String sheetName, String filePath) {
+      return exportOdsSheets(new ListVector(dataFrame), new StringArrayVector(sheetName), filePath);
+   }
+
+   public static boolean exportOdsSheets(ListVector dataFrames, StringArrayVector sheetNames, String filePath) {
       File file = new File(filePath);
 
       try {
@@ -62,22 +66,32 @@ public class OdsExporter {
             spreadSheet = new SpreadSheet();
          }
 
-         Sheet sheet = spreadSheet.getSheet(sheetName);
-         if (sheet == null) {
-            sheet = new Sheet(sheetName, dataFrame.maxElementLength() + 1, dataFrame.length() +1);
-            spreadSheet.appendSheet(sheet);
+         for (int i = 0; i < dataFrames.length(); i++) {
+            ListVector dataFrame = (ListVector)dataFrames.get(i);
+            String sheetName = sheetNames.toArray()[i];
+            //System.out.println("Writing sheet " + sheetName + " with a dataframe with "
+            //   + dataFrame.maxElementLength() + " rows and " + dataFrame.length() + " columns");
+            upsertSheet(dataFrame, sheetName, spreadSheet);
          }
-         buildSheet(dataFrame, sheet);
 
          try(FileOutputStream fos = new FileOutputStream(file)) {
             spreadSheet.save(fos);
          }
          return true;
       } catch (IOException e) {
-         System.err.println("Failed to create excel file: " + e.toString());
+         System.err.println("Failed to create ods file: " + e.toString());
          e.printStackTrace();
          return false;
       }
+   }
+
+   private static void upsertSheet(ListVector dataFrame, String sheetName, SpreadSheet spreadSheet) {
+      Sheet sheet = spreadSheet.getSheet(sheetName);
+      if (sheet == null) {
+         sheet = new Sheet(sheetName, dataFrame.maxElementLength() + 1, dataFrame.length() +1);
+         spreadSheet.appendSheet(sheet);
+      }
+      buildSheet(dataFrame, sheet);
    }
 
    private static void buildSheet(ListVector dataFrame, Sheet sheet) {
