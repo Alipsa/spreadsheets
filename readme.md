@@ -161,3 +161,19 @@ the tests on renjin cran).
 Also I missed some search functionality to make imports more dynamic in my R code. 
 As the gcc-bridge (which compiles C code to jvm byte code) gets better, the first kind of problem will disappear,
 but I needed something "now". This is a "Renjin native" package that attempts to address some of those issues.
+
+## Dependencies / 3:rd party libraries used
+
+1. Renjin (https://www.renjin.org/, https://github.com/bedatadriven/renjin).
+This is a Renjin package (extension) so obviously it requires Renjin to use. 
+I have tested with version 3.5-beta76 but there is no particular Renjin version required, 
+anything from version 0.9 and later should work.
+
+2. POI (https://poi.apache.org/)
+Used to read and write Excel files. Built and tested with poi version 4.1.2.
+
+3. SODS (https://github.com/miachm/SODS)
+Used to read and write Open Document Spreadsheets (Open Office / Libre Office Calc files).
+Built and tested with SODS version 1.2.2.
+
+
