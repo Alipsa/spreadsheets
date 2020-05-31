@@ -207,7 +207,7 @@ exportSpreadsheetsTest <- function(filePath) {
   if (file.exists(filePath)) file.remove(filePath)
   sheetNames <- c("mtcars", "iris", "PlantGrowth")
   result <- exportSpreadsheets(filePath, list(mtcars, iris, PlantGrowth), sheetNames)
-  assertThat(TRUE, equalTo(TRUE))
+  assertThat(result, equalTo(TRUE))
   assertThat(file.exists(filePath), equalTo(TRUE))
   sheets <- getSheetNames(filePath)
   assertThat(sheetNames, equalTo(sheets))

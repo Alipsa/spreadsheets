@@ -139,6 +139,19 @@ and sheet is the sheet name to create or update.
 
 The function returns TRUE if successful or FALSE if not. 
 
+### exportSpreadsheets: export multiple data.frames to an excel or Open Office spreadsheet
+Just like above, when you have several dataframes that you want to export in one go you can
+do it like this:
+```r
+exportSpreadsheets(
+  filePath = paste0(getwd(), "/dfExport.ods"), 
+  dfList = list(mtcars, iris, PlantGrowth), 
+  sheetNames = c("cars", "flowers", "plants")
+)
+```
+The number of sheet names must match the number of data frames in the list.
+
+
 There are more functions in the api than what is described above, see [SpreadsheetTests.R](https://github.com/Alipsa/spreadsheets/blob/master/src/test/R/SpreadsheetTests.R) for more examples.
 
 ## Background / motivation
