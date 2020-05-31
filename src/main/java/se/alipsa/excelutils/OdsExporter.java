@@ -11,7 +11,14 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Export data.frame(s) (ListVector) to a Calc (ods) file.
+ */
 public class OdsExporter {
+
+   private OdsExporter() {
+      // prevent instantiation
+   }
 
    /**
     * Create a new Open Document Spreadsheet file.

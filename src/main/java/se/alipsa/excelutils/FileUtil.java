@@ -8,7 +8,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Common file utilities
+ */
 public class FileUtil {
+
+   private FileUtil() {
+      // prevent instantiation
+   }
 
    /**
     * Verify that the filePath exists and is reachable

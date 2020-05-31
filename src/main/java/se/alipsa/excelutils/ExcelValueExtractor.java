@@ -2,7 +2,10 @@ package se.alipsa.excelutils;
 
 import org.apache.poi.ss.usermodel.*;
 
-public class ExcelValueExtractor extends AbstractValueExtractor {
+/**
+ * A value extractor specialized in extracting info from an Excel file
+ */
+public class ExcelValueExtractor extends ValueExtractor {
 
    private final Sheet sheet;
    private final FormulaEvaluator evaluator;

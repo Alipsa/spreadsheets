@@ -8,7 +8,14 @@ import java.io.*;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Export data.frame(s) (ListVector) to an Excel file.
+ */
 public class ExcelExporter {
+
+   private ExcelExporter() {
+      // prevent instantiation
+   }
 
    /**
     * Create a new excel file.

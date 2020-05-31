@@ -10,6 +10,9 @@ import java.util.List;
 
 import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
+/**
+ * Extract various information from an Excel file.
+ */
 public class ExcelReader {
 
    private static Workbook workbook;

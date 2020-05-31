@@ -2,7 +2,10 @@ package se.alipsa.excelutils;
 
 import java.time.LocalDateTime;
 
-public class AbstractValueExtractor {
+/**
+ * A ValueExtractor is a helper class that makes it easier to get values from a spreadsheet.
+ */
+public abstract class ValueExtractor {
 
    public double getDouble(Object val) {
       if (val == null) {

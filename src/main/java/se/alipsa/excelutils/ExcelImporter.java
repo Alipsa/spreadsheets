@@ -12,24 +12,90 @@ import static org.apache.poi.ss.usermodel.CellType.BOOLEAN;
 import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
 import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
+/**
+ * Import Excel into Renjin R in the form of a data.frame (ListVector).
+ */
 public class ExcelImporter {
 
+   private ExcelImporter() {
+      // prevent instantiation
+   }
+
+   /**
+    *
+    * @param filePath the full path or relative path to the Calc file
+    * @param sheetName the name of the sheet to import
+    * @param startRowNum the starting row number (1 indexed)
+    * @param endRowNum the ending row number (1 indexed)
+    * @param startColName the starting column name (e.g. A)
+    * @param endColNum the ending column number (1 indexed)
+    * @param firstRowAsColNames whether the first row should be used as column names for the dataframe or not.
+    * @return a data.frame of string characters with the values in the range specified
+    * @throws Exception of the file cannot be read or som other issue occurs.
+    */
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, String startColName, int endColNum, boolean firstRowAsColNames) throws Exception {
       return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.asColumnNumber(startColName), endColNum, firstRowAsColNames);
    }
 
+   /**
+    *
+    * @param filePath the full path or relative path to the Calc file
+    * @param sheetName the name of the sheet to import
+    * @param startRowNum the starting row number (1 indexed)
+    * @param endRowNum the ending row number (1 indexed)
+    * @param startColNum the start column number (1 indexed)
+    * @param endColName the name of the ending column (e.g. Z)
+    * @param firstRowAsColNames whether the first row should be used as column names for the dataframe or not.
+    * @return a data.frame of string characters with the values in the range specified
+    * @throws Exception of the file cannot be read or som other issue occurs.
+    */
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, String endColName, boolean firstRowAsColNames) throws Exception {
       return importExcel(filePath, sheetName, startRowNum, endRowNum, startColNum, SpreadsheetUtil.asColumnNumber(endColName), firstRowAsColNames);
    }
 
+   /**
+    *
+    * @param filePath the full path or relative path to the Calc file
+    * @param sheetName the name of the sheet to import
+    * @param startRowNum the starting row number (1 indexed)
+    * @param endRowNum the ending row number (1 indexed)
+    * @param startColName the starting column name (e.g. A)
+    * @param endColName the name of the ending column (e.g. Z)
+    * @param firstRowAsColNames whether the first row should be used as column names for the dataframe or not.
+    * @return a data.frame of string characters with the values in the range specified
+    * @throws Exception of the file cannot be read or som other issue occurs.
+    */
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
       return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.asColumnNumber(startColName), SpreadsheetUtil.asColumnNumber(endColName), firstRowAsColNames);
    }
 
-   public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
-      return importExcel(filePath, sheetNumber, startRowNum, endRowNum, SpreadsheetUtil.asColumnNumber(startColName), SpreadsheetUtil.asColumnNumber(endColName), firstRowAsColNames);
+   /**
+    * @param filePath the full path or relative path to the Calc file
+    * @param sheetNum the number of the sheet (1 indexed) to read
+    * @param startRowNum the starting row number (1 indexed)
+    * @param endRowNum the ending row number (1 indexed)
+    * @param startColName the starting column name (e.g. A)
+    * @param endColName the name of the ending column (e.g. Z)
+    * @param firstRowAsColNames whether the first row should be used as column names for the dataframe or not.
+    * @return a data.frame of string characters with the values in the range specified
+    * @throws Exception of the file cannot be read or som other issue occurs.
+    */
+   public static ListVector importExcel(String filePath, int sheetNum, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
+      return importExcel(filePath, sheetNum, startRowNum, endRowNum, SpreadsheetUtil.asColumnNumber(startColName), SpreadsheetUtil.asColumnNumber(endColName), firstRowAsColNames);
    }
 
+   /**
+    *
+    * @param filePath the full path or relative path to the Calc file
+    * @param sheetName the name of the sheet to import
+    * @param startRowNum the starting row number (1 indexed)
+    * @param endRowNum the ending row number (1 indexed)
+    * @param startColNum the start column number (1 indexed)
+    * @param endColNum the ending column number (1 indexed)
+    * @param firstRowAsColNames whether the first row should be used as column names for the dataframe or not.
+    * @return a data.frame of string characters with the values in the range specified
+    * @throws Exception of the file cannot be read or som other issue occurs.
+    */
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
       File excelFile = checkFilePath(filePath);
       List<String> header = new ArrayList<>();
@@ -49,12 +115,24 @@ public class ExcelImporter {
 
    }
 
-   public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
+   /**
+    *
+    * @param filePath the full path or relative path to the Calc file
+    * @param sheetNum the number of the sheet (1 indexed) to read
+    * @param startRowNum the starting row number (1 indexed)
+    * @param endRowNum the ending row number (1 indexed)
+    * @param startColNum the start column number (1 indexed)
+    * @param endColNum the ending column number (1 indexed)
+    * @param firstRowAsColNames whether the first row should be used as column names for the dataframe or not.
+    * @return a data.frame of string characters with the values in the range specified
+    * @throws Exception of the file cannot be read or som other issue occurs.
+    */
+   public static ListVector importExcel(String filePath, int sheetNum, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {
       File excelFile = checkFilePath(filePath);
       List<String> header = new ArrayList<>();
 
       try (Workbook workbook = WorkbookFactory.create(excelFile)) {
-         Sheet sheet = workbook.getSheetAt(sheetNumber-1);
+         Sheet sheet = workbook.getSheetAt(sheetNum - 1);
          if (firstRowAsColNames) {
             buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
             startRowNum = startRowNum + 1;
@@ -68,14 +146,26 @@ public class ExcelImporter {
       }
    }
 
-   public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum,int startColNum, int endColNum, Vector colNames) throws Exception {
+   /**
+    *
+    * @param filePath the full path or relative path to the Calc file
+    * @param sheetNum the number of the sheet (1 indexed) to read
+    * @param startRowNum the starting row number (1 indexed)
+    * @param endRowNum the ending row number (1 indexed)
+    * @param startColNum the start column number (1 indexed)
+    * @param endColNum the ending column number (1 indexed)
+    * @param colNames a Vector of column names to use as header
+    * @return a data.frame of string characters with the values in the range specified
+    * @throws Exception of the file cannot be read or som other issue occurs.
+    */
+   public static ListVector importExcel(String filePath, int sheetNum, int startRowNum, int endRowNum,int startColNum, int endColNum, Vector colNames) throws Exception {
       File excelFile = checkFilePath(filePath);
       List<String> header = new ArrayList<>();
       for (int i = 0; i < colNames.length(); i++) {
          header.add(colNames.getElementAsString(i));
       }
       try (Workbook workbook = WorkbookFactory.create(excelFile)) {
-         Sheet sheet = workbook.getSheetAt(sheetNumber-1);
+         Sheet sheet = workbook.getSheetAt(sheetNum - 1);
          return importExcel(sheet, startRowNum, endRowNum, startColNum, endColNum, header);
       }
 

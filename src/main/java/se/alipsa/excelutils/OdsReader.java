@@ -10,6 +10,9 @@ import java.util.List;
 
 import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
+/**
+ * Extract various information from a Calc (ods) file.
+ */
 public class OdsReader {
 
    private static SpreadSheet spreadSheet;

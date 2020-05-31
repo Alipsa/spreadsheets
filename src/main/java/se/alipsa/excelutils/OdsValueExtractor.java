@@ -6,7 +6,10 @@ import com.github.miachm.sods.Sheet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class OdsValueExtractor  extends AbstractValueExtractor {
+/**
+ * A value extractor specialized in extracting info from a Calc (ods) file
+ */
+public class OdsValueExtractor  extends ValueExtractor {
 
    private final Sheet sheet;
 
