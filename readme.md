@@ -137,7 +137,7 @@ and sheet is the sheet name to create or update.
 
 The function returns TRUE if successful or FALSE if not. 
 
-There are more functions in the api than what is described above, see [SpreadsheetTests.R] (https://github.com/Alipsa/spreadsheets/blob/master/src/test/R/SpreadsheetTests.R) for more examples.
+There are more functions in the api than what is described above, see [SpreadsheetTests.R](https://github.com/Alipsa/spreadsheets/blob/master/src/test/R/SpreadsheetTests.R) for more examples.
 
 ## Background / motivation
 Why not just use one of the existing packages such as xlsx, XLConnect, or gdata? 
