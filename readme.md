@@ -25,26 +25,26 @@ first sheet in the spreadsheet and column number 1 is the first (A) column etc.
 To find the first row where the cell value matches the cellContent parameter:  
 
 ```r
-rowNum <- findRowNumber(fileName = "df.xlsx", sheet = 1, column = 1, "Iris")
+rowNum <- findRowNumber(filePath = "df.xlsx", sheet = 1, column = 1, "Iris")
 ```
 
 You can also reference the sheet by name:
 
 ```r
-rowNum <- findRowNumber(fileName = "df.xlsx", sheet = "theSheetName", column = 1, "Iris")
+rowNum <- findRowNumber(filePath = "df.xlsx", sheet = "theSheetName", column = 1, "Iris")
 ```
 
 or only use names
 
 ```r
-rowNum <- findRowNumber(fileName = "df.xlsx", sheet = "theSheetName", column = "A", "Iris")
+rowNum <- findRowNumber(filePath = "df.xlsx", sheet = "theSheetName", column = "A", "Iris")
 ```
 
 ### findColumnNumber: Find a column in a row
 To find the first column where the cell value matches the cellContent parameter:  
 
 ```r
-colNum <- findColumnNumber(fileName = "df.xlsx", sheet = 1, row = 2, "carb")`
+colNum <- findColumnNumber(filePath = "df.xlsx", sheet = 1, row = 2, "carb")`
 ```
 
 You can also reference the sheet by name:
