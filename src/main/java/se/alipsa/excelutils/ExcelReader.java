@@ -12,7 +12,6 @@ import static se.alipsa.excelutils.FileUtil.checkFilePath;
 
 public class ExcelReader {
 
-   private static FormulaEvaluator evaluator;
    private static Workbook workbook;
 
    private ExcelReader() {
@@ -22,13 +21,11 @@ public class ExcelReader {
    private static void setExcel(String filePath) throws Exception {
       File excelFile = checkFilePath(filePath);
       workbook = WorkbookFactory.create(excelFile);
-      evaluator = workbook.getCreationHelper().createFormulaEvaluator();
    }
 
    private static void close() throws IOException {
       workbook.close();
       workbook = null;
-      evaluator = null;
    }
 
    /**
@@ -63,7 +60,7 @@ public class ExcelReader {
     * @throws Exception if something goes wrong
     */
    public static int findRowNum(String filePath, int sheetNumber, String colName, String content) throws Exception {
-      return findRowNum(filePath, sheetNumber, SpreadsheetUtil.toColumnNumber(colName), content);
+      return findRowNum(filePath, sheetNumber, SpreadsheetUtil.asColumnNumber(colName), content);
    }
 
    /**
@@ -76,7 +73,7 @@ public class ExcelReader {
     * @throws Exception if something goes wrong
     */
    public static int findRowNum(String filePath, String sheetName, String colName, String content) throws Exception {
-      return findRowNum(filePath, sheetName, SpreadsheetUtil.toColumnNumber(colName), content);
+      return findRowNum(filePath, sheetName, SpreadsheetUtil.asColumnNumber(colName), content);
    }
 
    /**

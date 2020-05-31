@@ -7,9 +7,7 @@ import org.renjin.script.RenjinScriptEngine;
 import org.renjin.script.RenjinScriptEngineFactory;
 import org.renjin.sexp.ListVector;
 
-import javax.script.ScriptException;
 import java.io.File;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,9 +25,9 @@ public class OdsExporterTest {
 
       System.out.println("Saving to " + file.getAbsolutePath());
 
-      OdsExporter.exportOds(mtcars, file.getAbsolutePath());
+      OdsExporter.exportOds(file.getAbsolutePath(), mtcars);
       assertTrue(file.exists());
-      OdsExporter.exportOds(mtcars, file.getAbsolutePath(), "1");
+      OdsExporter.exportOds(file.getAbsolutePath(), mtcars , "1");
 
       SpreadSheet spreadSheet = new SpreadSheet(file);
       assertEquals(1, spreadSheet.getNumSheets(), "Number of sheets");
@@ -42,7 +40,7 @@ public class OdsExporterTest {
       assertEquals(2, ext.getInt(lastRow,10));
 
       ListVector iris = (ListVector)engine.eval("iris");
-      OdsExporter.exportOds(iris, "iris", file.getAbsolutePath());
+      OdsExporter.exportOds(file.getAbsolutePath(), iris, "iris");
 
       spreadSheet = new SpreadSheet(file);
 
@@ -58,7 +56,7 @@ public class OdsExporterTest {
       assertEquals(1.8, ext.getDouble(lastRow,3), 0.00001);
       assertEquals("virginica", ext.getString(lastRow,4));
 
-      assertEquals(52, OdsReader.findRowNum(file.getAbsolutePath(), "iris", SpreadsheetUtil.toColumnNumber("E"), "versicolor"));
+      assertEquals(52, OdsReader.findRowNum(file.getAbsolutePath(), "iris", SpreadsheetUtil.asColumnNumber("E"), "versicolor"));
 
       file.deleteOnExit();
    }

@@ -17,7 +17,7 @@ public class ExcelExporter {
     * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
     * @return true if successful, false if not written (file exists or cannot be written to)
     */
-   public static boolean exportExcel(ListVector dataFrame, String filePath) {
+   public static boolean exportExcel(String filePath, ListVector dataFrame) {
       File file = new File(filePath);
       if (file.exists()) {
          System.err.println("Overwrite is false and file already exists");
@@ -60,8 +60,8 @@ public class ExcelExporter {
     * @param sheetName the name of the sheet to write to
     * @return true if successful, false if not written (file exists or cannot be written to)
     */
-   public static boolean exportExcel(ListVector dataFrame, String sheetName, String filePath) {
-      return exportExcelSheets(new ListVector(dataFrame), new StringArrayVector(sheetName), filePath);
+   public static boolean exportExcel(String filePath, ListVector dataFrame, String sheetName) {
+      return exportExcelSheets(filePath, new ListVector(dataFrame), new StringArrayVector(sheetName));
    }
 
    private static void upsertSheet(ListVector dataFrame, String sheetName, Workbook workbook) {
@@ -72,7 +72,7 @@ public class ExcelExporter {
       buildSheet(dataFrame, sheet);
    }
 
-   public static boolean exportExcelSheets(ListVector dataFrames, StringArrayVector sheetNames, String filePath) {
+   public static boolean exportExcelSheets(String filePath, ListVector dataFrames, StringArrayVector sheetNames) {
       File file = new File(filePath);
 
       try {

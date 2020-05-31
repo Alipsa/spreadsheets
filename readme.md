@@ -4,6 +4,19 @@ This package will give you the ability to work with (read, write) spreadsheets.
 
 It supports reading of excel and Open Office/Libre Office spreadsheets files.
 
+To use it add the following dependency to your pom.xml:
+```xml
+<dependency>
+  <groupId>se.alipsa</groupId>
+  <artifactId>spreadsheets</artifactId>
+  <version>1.1</version>
+</dependency>
+```
+and use it your Renjin R code after loading it with:
+```r
+library("se.alipsa:spreadsheets")
+```
+
 ## Usage
 * All indexes start with 1 (as is common practice in R), e.g. sheetNumber 1 refers to the 
 first sheet in the spreadsheet and column number 1 is the first (A) column etc.
@@ -47,14 +60,14 @@ or 0 if no such cell was found.
 Sometimes it is more convenient to refer to the column by the name e.g. A for the first column, B for the second.
 To convert an index to a name you can do:
 ```r
-print(columnName(14))
+print(as.columnName(14))
 [1] "N"
 ```
 
 But sometimes you want the other way around:
 
 ```r
-print(columnIndex("AF"))
+print(as.columnIndex("AF"))
 [1] 32
 ```
 
@@ -108,21 +121,23 @@ timeMeasuresDf$startDate <- as.Date(as.POSIXlt(timeMeasuresDf$startDate))
 
 To export to a new spread sheet use
 ```r
-exportSpreadsheet(df, filePath)
+exportSpreadsheet(filePath, df)
 ```
-Where df is the data-frame to export and filePath the path to the new sheet. If the file already exist, no action
+Where filePath the path to the new sheet and df is the data-frame to export. If the file already exist, no action
 will be taken.
 
 
 The "upsert" (create new if not exists, update if exist) version is:
 
 ```r
-exportSpreadsheet(df, filePath, sheet)
+exportSpreadsheet(filePath, df, sheet)
 ```
 Where df is the data-frame to export and filePath the path to the new or existing spreadsheet, 
 and sheet is the sheet name to create or update. 
 
 The function returns TRUE if successful or FALSE if not. 
+
+There are more functions in the api than what is described above, see [SpreadsheetTests.R] (https://github.com/Alipsa/spreadsheets/blob/master/src/test/R/SpreadsheetTests.R) for more examples.
 
 ## Background / motivation
 Why not just use one of the existing packages such as xlsx, XLConnect, or gdata? 

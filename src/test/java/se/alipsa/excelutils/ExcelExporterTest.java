@@ -9,12 +9,7 @@ import org.renjin.script.RenjinScriptEngine;
 import org.renjin.script.RenjinScriptEngineFactory;
 import org.renjin.sexp.ListVector;
 
-import javax.script.ScriptException;
-
 import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,9 +25,9 @@ public class ExcelExporterTest {
       File file = File.createTempFile("mtcars", ".xlsx");
       if (file.exists()) file.delete();
 
-      ExcelExporter.exportExcel(mtcars, file.getAbsolutePath());
+      ExcelExporter.exportExcel(file.getAbsolutePath(), mtcars);
       assertTrue(file.exists());
-      ExcelExporter.exportExcel(mtcars, "Sheet0", file.getAbsolutePath());
+      ExcelExporter.exportExcel(file.getAbsolutePath(), mtcars, "Sheet0");
 
 
       try(Workbook workbook = WorkbookFactory.create(file)) {
@@ -45,7 +40,7 @@ public class ExcelExporterTest {
       }
 
       ListVector iris = (ListVector)engine.eval("iris");
-      ExcelExporter.exportExcel(iris, "iris", file.getAbsolutePath());
+      ExcelExporter.exportExcel(file.getAbsolutePath(),iris, "iris");
       try(Workbook workbook = WorkbookFactory.create(file)) {
          assertEquals(2, workbook.getNumberOfSheets(), "Number of sheets");
          assertEquals(0, workbook.getSheetIndex("Sheet0"), "mtcars sheet index");
@@ -58,7 +53,7 @@ public class ExcelExporterTest {
          assertEquals(1.8, lastRow.getCell(3).getNumericCellValue(), 0.00001);
          assertEquals("virginica", lastRow.getCell(4).getStringCellValue());
       }
-      assertEquals(52, ExcelReader.findRowNum(file.getAbsolutePath(), "iris", SpreadsheetUtil.toColumnNumber("E"), "versicolor"));
+      assertEquals(52, ExcelReader.findRowNum(file.getAbsolutePath(), "iris", SpreadsheetUtil.asColumnNumber("E"), "versicolor"));
       file.deleteOnExit();
    }
 }

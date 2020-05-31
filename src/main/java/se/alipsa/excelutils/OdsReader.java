@@ -48,7 +48,7 @@ public class OdsReader {
     * @throws Exception if something goes wrong
     */
    public static int findRowNum(String filePath, int sheetNumber, String colName, String content) throws Exception {
-      return findRowNum(filePath, sheetNumber, SpreadsheetUtil.toColumnNumber(colName), content);
+      return findRowNum(filePath, sheetNumber, SpreadsheetUtil.asColumnNumber(colName), content);
    }
 
    /**
@@ -61,7 +61,7 @@ public class OdsReader {
     * @throws Exception if something goes wrong
     */
    public static int findRowNum(String filePath, String sheetName, String colName, String content) throws Exception {
-      return findRowNum(filePath, sheetName, SpreadsheetUtil.toColumnNumber(colName), content);
+      return findRowNum(filePath, sheetName, SpreadsheetUtil.asColumnNumber(colName), content);
    }
 
    /**

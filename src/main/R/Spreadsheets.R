@@ -1,9 +1,9 @@
 
-#' @param fileName The path to the excel file
+#' @param filePath The path to the excel file
 #' @param sheet Either the sheet index OR the sheet name
 #' @param column The column index or name (eg. A) for the column to search in
 #' @param cellContent The content to search for
-findRowNumber <- function(fileName, sheet = 1, column, cellContent) {
+findRowNumber <- function(filePath, sheet = 1, column, cellContent) {
   if (!(is.numeric(sheet) | is.character(sheet))) {
     stop("sheet parameter must either be an index or a string corresponding to the sheet")
   }
@@ -15,10 +15,10 @@ findRowNumber <- function(fileName, sheet = 1, column, cellContent) {
     if (is.numeric(column)) {
      column <- as.integer(column)
     }
-    if (endsWith(tolower(fileName), ".ods")) {
-      rowNum <- OdsReader$findRowNum(fileName, sheet, column, cellContent)
+    if (endsWith(tolower(filePath), ".ods")) {
+      rowNum <- OdsReader$findRowNum(filePath, sheet, column, cellContent)
     } else {
-      rowNum <- ExcelReader$findRowNum(fileName, sheet, column, cellContent)
+      rowNum <- ExcelReader$findRowNum(filePath, sheet, column, cellContent)
     }
     return(rowNum)
   },
@@ -27,11 +27,11 @@ findRowNumber <- function(fileName, sheet = 1, column, cellContent) {
   })
 }
 
-#' @param fileName The path to the excel file
+#' @param filePath The path to the excel file
 #' @param sheet Either the sheet index OR the sheet name
 #' @param row The row index for the row to search in
 #' @param cellContent The content to search for
-findColumnNumber <- function(fileName, sheet = 1, row, cellContent) {
+findColumnNumber <- function(filePath, sheet = 1, row, cellContent) {
   tryCatch({
     if (!(is.numeric(sheet) | is.character(sheet))) {
       stop("sheet parameter must either be an index or a string corresponding to the sheet")
@@ -40,10 +40,10 @@ findColumnNumber <- function(fileName, sheet = 1, row, cellContent) {
       sheet <- as.integer(sheet)
     }
     rowNum <- as.integer(row)
-    if (endsWith(tolower(fileName), ".ods")) {
-      colNum <- OdsReader$findColNum(fileName, sheet, rowNum, cellContent)
+    if (endsWith(tolower(filePath), ".ods")) {
+      colNum <- OdsReader$findColNum(filePath, sheet, rowNum, cellContent)
     } else {
-      colNum <- ExcelReader$findColNum(fileName, sheet, rowNum, cellContent)
+      colNum <- ExcelReader$findColNum(filePath, sheet, rowNum, cellContent)
     }
     return(colNum)
   },
@@ -52,18 +52,18 @@ findColumnNumber <- function(fileName, sheet = 1, row, cellContent) {
   })
 }
 
-columnIndex <- function(columnName) {
+as.columnIndex <- function(columnName) {
   if (!is.character(columnName)) {
     stop("columnName parameter must be a character string")
   }
-  SpreadsheetUtil$toColumnNumber(columnName)
+  SpreadsheetUtil$asColumnNumber(columnName)
 }
 
-columnName <- function(columnIndex) {
+as.columnName <- function(columnIndex) {
   if (!is.numeric(columnIndex)) {
     stop("columnIndex parameter must be a number")
   }
-  SpreadsheetUtil$toColumnName(as.integer(columnIndex))
+  SpreadsheetUtil$asColumnName(as.integer(columnIndex))
 }
 
 getSheetNames <- function(filePath) {
@@ -168,40 +168,43 @@ importOds <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn = 1
   }
 }
 
-exportSpreadsheet <- function(df, filePath, sheet = NA) {
+exportSpreadsheet <- function(filePath, df, sheet = NA) {
   if (!dir.exists(dirname(filePath))) {
     stop(paste(dirname(filePath), "does not exists, create it first before exporting a file there!"))
   }
   if (endsWith(tolower(filePath), ".ods")) {
-    exportOds(df, filePath, sheet)
+    exportOds(filePath, df, sheet)
   } else {
-    exportExcel(df, filePath, sheet)
+    exportExcel(filePath, df, sheet)
   }
 }
 
-exportExcel <- function(df, filePath, sheet = NA) {
+exportExcel <- function(filePath, df, sheet = NA) {
   if (is.na(sheet)) {
-    return(ExcelExporter$exportExcel(df, filePath))
+    return(ExcelExporter$exportExcel(filePath, df))
   } else {
-    return(ExcelExporter$exportExcel(df, sheet, filePath ))
+    return(ExcelExporter$exportExcel(filePath, df, sheet ))
   }
 }
 
-exportOds <- function(df, filePath, sheet = NA) {
+exportOds <- function(filePath, df, sheet = NA) {
   if (is.na(sheet)) {
-    return(OdsExporter$exportOds(df, filePath))
+    return(OdsExporter$exportOds(filePath, df))
   } else {
-    return(OdsExporter$exportOds(df, sheet, filePath))
+    return(OdsExporter$exportOds(filePath, df, sheet))
   }
 }
 
-exportSpreadsheets <- function(dfList, sheetNames, filePath) {
-  if (class(dfList) == "NULL" | class(dfList) == "NA") {
-    stop("dfList must be specified")
-  }
+exportSpreadsheets <- function(filePath, dfList, sheetNames ) {
+
   if (class(filePath) == "NULL" | class(filePath) == "NA") {
     stop("filePath must be specified")
   }
+
+  if (class(dfList) == "NULL" | class(dfList) == "NA") {
+    stop("dfList must be specified")
+  }
+
   if (class(sheetNames) == "NULL" | class(sheetNames) == "NA") {
     stop("sheetNames not specified")
   }
@@ -228,9 +231,9 @@ exportSpreadsheets <- function(dfList, sheetNames, filePath) {
   }
 
   if (endsWith(tolower(filePath), ".ods")) {
-    return(OdsExporter$exportOdsSheets(dfList, sheetNames, filePath))
+    return(OdsExporter$exportOdsSheets(filePath, dfList, sheetNames))
   } else {
-    return(ExcelExporter$exportExcelSheets(dfList, sheetNames, filePath))
+    return(ExcelExporter$exportExcelSheets(filePath, dfList, sheetNames))
   }
 }
 

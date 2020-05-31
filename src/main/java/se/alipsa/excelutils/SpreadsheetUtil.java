@@ -8,7 +8,7 @@ public class SpreadsheetUtil {
 
    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
-   public static int toColumnNumber(String name) {
+   public static int asColumnNumber(String name) {
       if (name == null) {
          return 0;
       }
@@ -21,10 +21,10 @@ public class SpreadsheetUtil {
    }
 
    public static int toPoiColumnNumber(String name) {
-      return toColumnNumber(name) -1;
+      return asColumnNumber(name) -1;
    }
 
-   public static String toColumnName(int number) {
+   public static String asColumnName(int number) {
       StringBuilder sb = new StringBuilder();
       while (number-- > 0) {
          sb.append((char)('A' + (number % 26)));
@@ -33,7 +33,7 @@ public class SpreadsheetUtil {
       return sb.reverse().toString();
    }
 
-   public static String toDateString(double dateNumber, String... pattern) {
+   public static String asDateString(double dateNumber, String... pattern) {
       DateTimeFormatter formatter = pattern.length > 0 ? DateTimeFormatter.ofPattern(pattern[0]) : dateTimeFormatter;
       return formatter.format(DateUtil.getLocalDateTime(dateNumber));
    }

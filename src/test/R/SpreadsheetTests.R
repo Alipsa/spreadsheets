@@ -1,15 +1,15 @@
 library('hamcrest')
 library('se.alipsa:spreadsheets')
 
-wdfile <- function(fileName) {
-  paste0(getwd(), "/", fileName)
+wdfile <- function(filePath) {
+  paste0(getwd(), "/", filePath)
 }
 
-findRowNumSunnyTest <- function(fileName) {
-  rowNum <- findRowNumber(fileName = fileName, sheet = 1, column = 1, "Iris")
+findRowNumSunnyTest <- function(filePath) {
+  rowNum <- findRowNumber(filePath = filePath, sheet = 1, column = 1, "Iris")
   assertThat(rowNum, equalTo(36))
 
-  rowNum <- findRowNumber(fileName = fileName, sheet = "project-dashboard", column = 1, "Iris")
+  rowNum <- findRowNumber(filePath = filePath, sheet = "project-dashboard", column = 1, "Iris")
   assertThat(rowNum, equalTo(36))
 }
 
@@ -21,9 +21,12 @@ test.findRowNumSunnyOds <- function() {
   findRowNumSunnyTest(wdfile("df.ods"))
 }
 
-finRowNumRainy <- function(notExistingFileName, fileName) {
+finRowNumRainy <- function(notExistingFileName, filePathThatExist) {
+  if (!file.exists(filePathThatExist)) {
+    stop("Wrong test data, filePathThatExistmust exist")
+  }
   tryCatch(
-    findRowNumber(fileName = notExistingFileName, sheet = 1, column = 1, "Iris"),
+    findRowNumber(filePath = notExistingFileName, sheet = 1, column = 1, "Iris"),
 
     error = function(err) {
       #print(paste("Expected error was: ", err))
@@ -31,7 +34,7 @@ finRowNumRainy <- function(notExistingFileName, fileName) {
     }
   )
 
-  rowNum <- findRowNumber(fileName, 1, 1, "Nothing that exist")
+  rowNum <- findRowNumber(filePathThatExist, 1, 1, "Nothing that exist")
   assertThat(rowNum, equalTo(-1))
 }
 
@@ -42,11 +45,11 @@ test.finRowNumRainyOds <- function() {
   finRowNumRainy("doesnotexist.ods", wdfile("df.ods"))
 }
 
-findColumnsSunny <- function(fileName) {
-  colNum <- findColumnNumber(fileName, 1, 2, "carb")
+findColumnsSunny <- function(filePath) {
+  colNum <- findColumnNumber(filePath, 1, 2, "carb")
   assertThat(colNum, equalTo(11L))
 
-  colNum <- findColumnNumber(fileName, "project-dashboard", 2, "carb")
+  colNum <- findColumnNumber(filePath, "project-dashboard", 2, "carb")
   assertThat(colNum, equalTo(11L))
 }
 
@@ -57,9 +60,9 @@ test.findColumnsSunnyOds <- function() {
   findColumnsSunny(wdfile("df.ods"))
 }
 
-importWithHeaderRow <- function(fileName) {
+importWithHeaderRow <- function(filePath) {
   df <- importSpreadsheet(
-    filePath = fileName,
+    filePath = filePath,
     sheet = 1,
     startRow = 2,
     endRow = 34,
@@ -82,9 +85,9 @@ test.importWithHeaderRowOds <- function() {
   importWithHeaderRow(wdfile("df.ods"))
 }
 
-importNoHeaderRow <- function(fileName) {
+importNoHeaderRow <- function(filePath) {
   df <- importSpreadsheet(
-    filePath = fileName,
+    filePath = filePath,
     sheet = 1,
     startRow = 3,
     endRow = 34,
@@ -104,9 +107,9 @@ test.importNoHeaderRowOds <- function() {
   importNoHeaderRow(wdfile("df.ods"))
 }
 
-importWithHeaderNames <- function(fileName) {
+importWithHeaderNames <- function(filePath) {
   df <- importSpreadsheet(
-    filePath = fileName,
+    filePath = filePath,
     sheet = 1,
     startRow = 3,
     endRow = 34,
@@ -126,9 +129,9 @@ test.importWithHeaderNamesOds <- function() {
   importWithHeaderNames(wdfile("df.ods"))
 }
 
-importComplex <- function(fileName) {
+importComplex <- function(filePath) {
   df <- importSpreadsheet(
-    filePath = fileName,
+    filePath = filePath,
     sheet = 1,
     startRow = 1,
     endRow = 7,
@@ -154,21 +157,21 @@ test.importComplexOds <- function() {
 }
 
 test.columnNameConversions <- function() {
-  assertThat(columnIndex("N"), equalTo(14))
-  assertThat(columnIndex("AF"), equalTo(32))
-  assertThat(columnIndex("AAB"), equalTo(704))
+  assertThat(as.columnIndex("N"), equalTo(14))
+  assertThat(as.columnIndex("AF"), equalTo(32))
+  assertThat(as.columnIndex("AAB"), equalTo(704))
 
-  assertThat(columnName(14), equalTo("N"))
-  assertThat(columnName(32), equalTo("AF"))
-  assertThat(columnName(704), equalTo("AAB"))
+  assertThat(as.columnName(14), equalTo("N"))
+  assertThat(as.columnName(32), equalTo("AF"))
+  assertThat(as.columnName(704), equalTo("AAB"))
 }
 
-exportNew <- function(fileName) {
-  if (file.exists(fileName)) file.remove(fileName)
-  result <- exportSpreadsheet(mtcars, fileName)
+exportNew <- function(filePath) {
+  if (file.exists(filePath)) file.remove(filePath)
+  result <- exportSpreadsheet(filePath, mtcars)
   assertThat(result, equalTo(TRUE))
-  gearCol <- findColumnNumber(fileName, 1, 1, "gear")
-  expected <- columnIndex("J")
+  gearCol <- findColumnNumber(filePath, 1, 1, "gear")
+  expected <- as.columnIndex("J")
   assertThat(gearCol, equalTo(expected))
 }
 
@@ -180,15 +183,15 @@ test.exportNewOds <- function() {
   exportNew(wdfile("test.ods"))
 }
 
-update <- function(fileName) {
-  if (file.exists(fileName)) file.remove(fileName)
-  result <- exportSpreadsheet(mtcars, fileName)
+update <- function(filePath) {
+  if (file.exists(filePath)) file.remove(filePath)
+  result <- exportSpreadsheet(filePath, mtcars)
   assertThat(result, equalTo(TRUE))
-  result <- exportSpreadsheet(iris, fileName, "iris")
+  result <- exportSpreadsheet(filePath, iris, "iris")
   assertThat(result, equalTo(TRUE))
-  gearCol <- findColumnNumber(fileName, 1, 1, "gear")
-  assertThat(gearCol, equalTo(columnIndex("J")))
-  versicolorRow <- findRowNumber(fileName, "iris", columnIndex("E") , "versicolor")
+  gearCol <- findColumnNumber(filePath, 1, 1, "gear")
+  assertThat(gearCol, equalTo(as.columnIndex("J")))
+  versicolorRow <- findRowNumber(filePath, "iris", as.columnIndex("E") , "versicolor")
   assertThat(versicolorRow, equalTo(52))
 }
 
@@ -200,25 +203,26 @@ test.updateOds <- function() {
   update(wdfile("test2.ods"))
 }
 
-exportSpreadsheetsTest <- function(fileName) {
-  if (file.exists(fileName)) file.remove(fileName)
+exportSpreadsheetsTest <- function(filePath) {
+  if (file.exists(filePath)) file.remove(filePath)
   sheetNames <- c("mtcars", "iris", "PlantGrowth")
-  result <- exportSpreadsheets(list(mtcars, iris, PlantGrowth), sheetNames, fileName)
-  assertThat(result, equalTo(TRUE))
-  sheets <- getSheetNames(fileName)
+  result <- exportSpreadsheets(filePath, list(mtcars, iris, PlantGrowth), sheetNames)
+  assertThat(TRUE, equalTo(TRUE))
+  assertThat(file.exists(filePath), equalTo(TRUE))
+  sheets <- getSheetNames(filePath)
   assertThat(sheetNames, equalTo(sheets))
 }
 
 test.exportSpreadsheetsExcel <- function() {
-  exportSpreadsheetsTest("testSheets.xlsx")
+  exportSpreadsheetsTest(wdfile("testSheets.xlsx"))
 }
 
 test.exportSpreadsheetsOds <- function() {
-  exportSpreadsheetsTest("testSheets.ods")
+  exportSpreadsheetsTest(wdfile("testSheets.ods"))
 }
 
 test.exportSpreadsheetRainy <- function() {
-  assertThat(exportSpreadsheets(NA, sheetNames, fileName), throwsError())
+  assertThat(exportSpreadsheets("filePath.xlsx", NA, sheetNames), throwsError())
 
-  assertThat(exportSpreadsheets(list(mtcars), NULL, fileName), throwsError())
+  assertThat(exportSpreadsheets("filePath.ods", list(mtcars), NULL), throwsError())
 }

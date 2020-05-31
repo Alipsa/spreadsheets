@@ -15,19 +15,19 @@ import static se.alipsa.excelutils.FileUtil.checkFilePath;
 public class ExcelImporter {
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, String startColName, int endColNum, boolean firstRowAsColNames) throws Exception {
-      return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), endColNum, firstRowAsColNames);
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.asColumnNumber(startColName), endColNum, firstRowAsColNames);
    }
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, String endColName, boolean firstRowAsColNames) throws Exception {
-      return importExcel(filePath, sheetName, startRowNum, endRowNum, startColNum, SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, startColNum, SpreadsheetUtil.asColumnNumber(endColName), firstRowAsColNames);
    }
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
-      return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
+      return importExcel(filePath, sheetName, startRowNum, endRowNum, SpreadsheetUtil.asColumnNumber(startColName), SpreadsheetUtil.asColumnNumber(endColName), firstRowAsColNames);
    }
 
    public static ListVector importExcel(String filePath, int sheetNumber, int startRowNum, int endRowNum, String startColName, String endColName, boolean firstRowAsColNames) throws Exception {
-      return importExcel(filePath, sheetNumber, startRowNum, endRowNum, SpreadsheetUtil.toColumnNumber(startColName), SpreadsheetUtil.toColumnNumber(endColName), firstRowAsColNames);
+      return importExcel(filePath, sheetNumber, startRowNum, endRowNum, SpreadsheetUtil.asColumnNumber(startColName), SpreadsheetUtil.asColumnNumber(endColName), firstRowAsColNames);
    }
 
    public static ListVector importExcel(String filePath, String sheetName, int startRowNum, int endRowNum, int startColNum, int endColNum, boolean firstRowAsColNames) throws Exception {

@@ -22,10 +22,10 @@ public class ExcelReaderTest {
    public void testFindColNum() throws Exception {
       int colNum = ExcelReader.findColNum("df.xlsx",1,37,"Petal.Length");
       assertEquals(3, colNum);
-      assertEquals(SpreadsheetUtil.toColumnNumber("C"), colNum);
+      assertEquals(SpreadsheetUtil.asColumnNumber("C"), colNum);
 
       colNum = ExcelReader.findColNum("df.xlsx",1,36,"test");
-      assertEquals(SpreadsheetUtil.toColumnNumber("L"), colNum);
+      assertEquals(SpreadsheetUtil.asColumnNumber("L"), colNum);
    }
 
    @Test

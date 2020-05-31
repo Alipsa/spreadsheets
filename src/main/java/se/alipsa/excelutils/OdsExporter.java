@@ -20,7 +20,7 @@ public class OdsExporter {
     * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
     * @return true if successful, false if not written (file exists or cannotbe written to)
     */
-   public static boolean exportOds(ListVector dataFrame, String filePath) {
+   public static boolean exportOds(String filePath, ListVector dataFrame) {
       File file = new File(filePath);
       if (file.exists()) {
          System.err.println("Overwrite is false and file already exists");
@@ -51,11 +51,11 @@ public class OdsExporter {
     * @param sheetName the name of the sheet to write to
     * @return true if successful, false if not written (file exists or cannotbe written to)
     */
-   public static boolean exportOds(ListVector dataFrame, String sheetName, String filePath) {
-      return exportOdsSheets(new ListVector(dataFrame), new StringArrayVector(sheetName), filePath);
+   public static boolean exportOds(String filePath, ListVector dataFrame, String sheetName) {
+      return exportOdsSheets(filePath, new ListVector(dataFrame), new StringArrayVector(sheetName));
    }
 
-   public static boolean exportOdsSheets(ListVector dataFrames, StringArrayVector sheetNames, String filePath) {
+   public static boolean exportOdsSheets(String filePath, ListVector dataFrames, StringArrayVector sheetNames) {
       File file = new File(filePath);
 
       try {

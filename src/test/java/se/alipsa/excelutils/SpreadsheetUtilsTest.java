@@ -8,12 +8,12 @@ public class SpreadsheetUtilsTest {
 
    @Test
    public void testColumnConversion() {
-      assertEquals(14, SpreadsheetUtil.toColumnNumber("N"));
-      assertEquals(32, SpreadsheetUtil.toColumnNumber("AF"));
-      assertEquals(704, SpreadsheetUtil.toColumnNumber("AAB"));
+      assertEquals(14, SpreadsheetUtil.asColumnNumber("N"));
+      assertEquals(32, SpreadsheetUtil.asColumnNumber("AF"));
+      assertEquals(704, SpreadsheetUtil.asColumnNumber("AAB"));
 
-      assertEquals("N", SpreadsheetUtil.toColumnName(14));
-      assertEquals("AF", SpreadsheetUtil.toColumnName(32));
-      assertEquals("AAB", SpreadsheetUtil.toColumnName(704));
+      assertEquals("N", SpreadsheetUtil.asColumnName(14));
+      assertEquals("AF", SpreadsheetUtil.asColumnName(32));
+      assertEquals("AAB", SpreadsheetUtil.asColumnName(704));
    }
 }
