@@ -21,6 +21,8 @@ library("se.alipsa:spreadsheets")
 * All indexes start with 1 (as is common practice in R), e.g. sheetNumber 1 refers to the 
 first sheet in the spreadsheet and column number 1 is the first (A) column etc.
 
+The file extension is used to determine whether it is an Excel (xls/xlsx) or Calc (ods) file. 
+
 ### findRowNumber: Find a row in a column
 To find the first row where the cell value matches the cellContent parameter:  
 
@@ -31,7 +33,7 @@ rowNum <- findRowNumber(filePath = "df.xlsx", sheet = 1, column = 1, "Iris")
 You can also reference the sheet by name:
 
 ```r
-rowNum <- findRowNumber(filePath = "df.xlsx", sheet = "theSheetName", column = 1, "Iris")
+rowNum <- findRowNumber(filePath = "df.ods", sheet = "theSheetName", column = 1, "Iris")
 ```
 
 or only use names
@@ -93,8 +95,8 @@ The parameters are as follows:
 * endColumn: The last column index (or name) to read from.
 * firstRowAsColumnNames: If true then use the values of the first column as column names for the data.frame
 
-The resulting dataframe will read all values as character strings so you will likely need to
-massage the data efter the import to get what you want. e.g.
+The resulting dataframe will read all values as character strings, so you will likely need to
+massage the data after the import to get what you want. e.g.
 ```r
 excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg))
 ```
@@ -105,7 +107,7 @@ Dates are converted to strings in the format yyyy-MM-dd HH:mm:ss.SSS which is th
 ```r
 library("se.alipsa:spreadsheets")
 timeMeasuresDf <- importSpreadsheet(
-  filePath = "E:\\some\\path\\data\\timeMeasures.xlsx",
+  filePath = "E:\\some\\path\\data\\timeMeasures.ods",
   sheet = 1,
   startRow = 1,
   endRow = 7,
