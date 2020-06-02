@@ -23,7 +23,7 @@ public class OdsExporterTest {
       File file = File.createTempFile("mtcars", ".ods");
       if (file.exists()) file.delete();
 
-      System.out.println("Saving to " + file.getAbsolutePath());
+      //System.out.println("Saving to " + file.getAbsolutePath());
 
       OdsExporter.exportOds(file.getAbsolutePath(), mtcars);
       assertTrue(file.exists());
