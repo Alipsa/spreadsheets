@@ -160,9 +160,9 @@ There are more functions in the api than what is described above, see [Spreadshe
 Why not just use one of the existing packages such as xlsx, XLConnect, or gdata? 
 Sometimes I had problems with loading these packages, or some functions did not work (none of them fully passes 
 the tests on renjin cran).
-Also I missed some search functionality to make imports more dynamic in my R code. 
+Also, I missed some search functionality to make imports more dynamic in my R code. 
 As the gcc-bridge (which compiles C code to jvm byte code) gets better, the first kind of problem will disappear,
-but I needed something "now". This is a "Renjin native" package that attempts to address some of those issues.
+but I needed something "now". This is a "Renjin native" package which attempts to address some of those issues.
 
 ## Dependencies / 3:rd party libraries used
 
@@ -184,6 +184,7 @@ Built and tested with SODS version 1.2.2.
 1.2-SNAPSHOT
 - Changed from primitives to Object wrappers (int -> Integer etc.) so that we can correctly return
 NULL for missing values (which will be NA in the data.frame).
+- Allow export to update existing file.
 
 1.1
 - Api change: modified the api so that we always start with filePath to make it more consistent.
