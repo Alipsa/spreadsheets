@@ -3,6 +3,8 @@ package se.alipsa.excelutils;
 import org.apache.poi.ss.usermodel.*;
 import org.renjin.primitives.Types;
 import org.renjin.sexp.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Iterator;
@@ -13,6 +15,8 @@ import java.util.Map;
  */
 public class ExcelExporter {
 
+   private static final Logger logger = LoggerFactory.getLogger(ExcelExporter.class);
+
    private ExcelExporter() {
       // prevent instantiation
    }
@@ -21,35 +25,62 @@ public class ExcelExporter {
     * Create a new excel file.
     *
     * @param dataFrame the data.frame to export
-    * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
-    * @return true if successful, false if not written (file exists or cannot be written to)
+    * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx
+    * @return true if successful, false if not written (e.g. file cannot be written to)
     */
    public static boolean exportExcel(String filePath, ListVector dataFrame) {
       File file = new File(filePath);
       if (file.exists()) {
-         System.err.println("Overwrite is false and file already exists");
-         return false;
+         logger.info("File {} already exists, file length is {} kb", file.getAbsolutePath(), file.length()/1024 );
       }
       String lcFilePath = filePath.toLowerCase();
 
       if (!(lcFilePath.endsWith("xls") || lcFilePath.endsWith("xlsx"))) {
-         System.err.println("Non typical extension detected, will save as xlsx format");
+         logger.warn("Non typical extension detected (file neither ends with .xls or .xlsx), so will save as xlsx format");
       }
 
-      boolean asXssf = isXssf(lcFilePath);
+      Workbook workbook;
+      try {
+         FileInputStream fis = null;
+         if (file.exists()) {
+            fis = new FileInputStream(file);
+            workbook = WorkbookFactory.create(fis);
+         } else {
+            workbook = WorkbookFactory.create(isXssf(lcFilePath));
+         }
 
-      try(Workbook workbook = WorkbookFactory.create(asXssf)) {
          Sheet sheet = workbook.createSheet();
          buildSheet(dataFrame, sheet);
-         try(FileOutputStream fos = new FileOutputStream(file)) {
-            workbook.write(fos);
+         if (fis != null) {
+            fis.close();
          }
-         return true;
+         return writeFile(file, workbook);
       } catch (IOException e) {
-         System.err.println("Failed to create excel file: " + e.toString());
-         e.printStackTrace();
+         logger.error("Failed to create excel file {}" + file.getAbsolutePath(), e);
          return false;
       }
+   }
+
+   private static boolean writeFile(File file, Workbook workbook) throws IOException {
+      if (workbook == null) {
+         logger.warn("Workbook is null, cannot write to file");
+         return false;
+      }
+      logger.info("Writing spreadsheet to {}", file.getAbsolutePath());
+      try(FileOutputStream fos = new FileOutputStream(file)) {
+         workbook.write(fos);
+      } finally {
+         try {
+            workbook.close();
+         } catch (IOException e) {
+            e.printStackTrace();
+         }
+      }
+      if (!file.exists()) {
+         logger.warn("Failed to write to file");
+         return false;
+      }
+      return true;
    }
 
    private static boolean isXssf(String filePath) {
@@ -65,7 +96,7 @@ public class ExcelExporter {
     * @param dataFrame the data.frame to export
     * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
     * @param sheetName the name of the sheet to write to
-    * @return true if successful, false if not written (file exists or cannot be written to)
+    * @return true if successful, false if not written (e.g. file cannot be written to)
     */
    public static boolean exportExcel(String filePath, ListVector dataFrame, String sheetName) {
       return exportExcelSheets(filePath, new ListVector(dataFrame), new StringArrayVector(sheetName));
@@ -99,19 +130,12 @@ public class ExcelExporter {
             //   + dataFrame.maxElementLength() + " rows and " + dataFrame.length() + " columns");
             upsertSheet(dataFrame, sheetName, workbook);
          }
-
          if (fis != null) {
             fis.close();
          }
-         try(FileOutputStream fos = new FileOutputStream(file)) {
-            workbook.write(fos);
-         }
-         workbook.close();
-         //System.out.println(file.getAbsolutePath() + " created");
-         return true;
+         return writeFile(file, workbook);
       } catch (IOException e) {
-         System.err.println("Failed to create excel file: " + e.toString());
-         e.printStackTrace();
+         logger.error("Failed to create excel file {}" + file.getAbsolutePath(), e);
          return false;
       }
    }

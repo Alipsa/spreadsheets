@@ -173,17 +173,21 @@ exportSpreadsheet <- function(filePath, df, sheet = NA) {
     stop(paste(dirname(filePath), "does not exists, create it first before exporting a file there!"))
   }
   if (endsWith(tolower(filePath), ".ods")) {
-    exportOds(filePath, df, sheet)
+    result <- exportOds(filePath, df, sheet)
   } else {
-    exportExcel(filePath, df, sheet)
+    result <- exportExcel(filePath, df, sheet)
   }
+  if (result == FALSE) {
+    warning(paste("Failed to export spreadsheet to", filePath))
+  }
+  result
 }
 
 exportExcel <- function(filePath, df, sheet = NA) {
   if (is.na(sheet)) {
     return(ExcelExporter$exportExcel(filePath, df))
   } else {
-    return(ExcelExporter$exportExcel(filePath, df, sheet ))
+    return(ExcelExporter$exportExcel(filePath, df, sheet))
   }
 }
 
@@ -231,9 +235,13 @@ exportSpreadsheets <- function(filePath, dfList, sheetNames ) {
   }
 
   if (endsWith(tolower(filePath), ".ods")) {
-    return(OdsExporter$exportOdsSheets(filePath, dfList, sheetNames))
+    result <- OdsExporter$exportOdsSheets(filePath, dfList, sheetNames)
   } else {
-    return(ExcelExporter$exportExcelSheets(filePath, dfList, sheetNames))
+    result <- ExcelExporter$exportExcelSheets(filePath, dfList, sheetNames)
   }
+  if (result == FALSE) {
+    warning(paste("Failed to export spreadsheet to", filePath))
+  }
+  result
 }
 

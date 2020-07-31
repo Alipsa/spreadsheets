@@ -4,6 +4,8 @@ import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
 import org.renjin.primitives.Types;
 import org.renjin.sexp.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +18,8 @@ import java.util.Map;
  */
 public class OdsExporter {
 
+   private static final Logger logger = LoggerFactory.getLogger(OdsExporter.class);
+
    private OdsExporter() {
       // prevent instantiation
    }
@@ -24,28 +28,29 @@ public class OdsExporter {
     * Create a new Open Document Spreadsheet file.
     *
     * @param dataFrame the data.frame to export
-    * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
-    * @return true if successful, false if not written (file exists or cannotbe written to)
+    * @param filePath the file path + file name of the file to export to. Should end with .ods
+    * @return true if successful, false if not written (e.g. file cannot be written to)
     */
    public static boolean exportOds(String filePath, ListVector dataFrame) {
       File file = new File(filePath);
       if (file.exists()) {
-         System.err.println("Overwrite is false and file already exists");
-         return false;
+         logger.info("File {} already exists, file length is {} kb", file.getAbsolutePath(), file.length()/1024 );
       }
 
       try {
-         SpreadSheet spreadSheet = new SpreadSheet();
+         SpreadSheet spreadSheet;
+         if (file.exists()) {
+            spreadSheet = new SpreadSheet(file);
+         } else {
+            spreadSheet = new SpreadSheet();
+         }
          int nextIdx = spreadSheet.getNumSheets() + 1;
          Sheet sheet = new Sheet(String.valueOf(nextIdx), dataFrame.maxElementLength() + 1, dataFrame.length() + 1);
          spreadSheet.appendSheet(sheet);
          buildSheet(dataFrame, sheet);
-         try (FileOutputStream fos = new FileOutputStream(file)) {
-            spreadSheet.save(fos);
-         }
-         return true;
+         return writeFile(file, spreadSheet);
       } catch (IOException e) {
-         e.printStackTrace();
+         logger.error("Failed to create ods file {}" + file.getAbsolutePath(), e);
          return false;
       }
    }
@@ -54,9 +59,9 @@ public class OdsExporter {
     * upsert: Create new or update existing Open Document Spreadsheet, adding or updating a sheet with the name specified
     *
     * @param dataFrame the data.frame to export
-    * @param filePath the file path + file name of the file to export to. Should end with one of .xls, .xlsx, .ods
+    * @param filePath the file path + file name of the file to export to. Should end with .ods
     * @param sheetName the name of the sheet to write to
-    * @return true if successful, false if not written (file exists or cannotbe written to)
+    * @return true if successful, false if not written (e.g. file cannot be written to)
     */
    public static boolean exportOds(String filePath, ListVector dataFrame, String sheetName) {
       return exportOdsSheets(filePath, new ListVector(dataFrame), new StringArrayVector(sheetName));
@@ -80,16 +85,23 @@ public class OdsExporter {
             //   + dataFrame.maxElementLength() + " rows and " + dataFrame.length() + " columns");
             upsertSheet(dataFrame, sheetName, spreadSheet);
          }
-
-         try(FileOutputStream fos = new FileOutputStream(file)) {
-            spreadSheet.save(fos);
-         }
-         return true;
+         return writeFile(file, spreadSheet);
       } catch (IOException e) {
-         System.err.println("Failed to create ods file: " + e.toString());
-         e.printStackTrace();
+         logger.error("Failed to create ods file {}" + file.getAbsolutePath(), e);
          return false;
       }
+   }
+
+   private static boolean writeFile(File file, SpreadSheet spreadSheet) throws IOException {
+      logger.info("Writing spreadsheet to {}", file.getAbsolutePath());
+      try(FileOutputStream fos = new FileOutputStream(file)) {
+         spreadSheet.save(fos);
+      }
+      if (!file.exists()) {
+         System.err.println("Failed to write to file");
+         return false;
+      }
+      return true;
    }
 
    private static void upsertSheet(ListVector dataFrame, String sheetName, SpreadSheet spreadSheet) {
