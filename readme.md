@@ -9,7 +9,7 @@ To use it add the following dependency to your pom.xml:
 <dependency>
   <groupId>se.alipsa</groupId>
   <artifactId>spreadsheets</artifactId>
-  <version>1.1</version>
+  <version>1.2</version>
 </dependency>
 ```
 and use it your Renjin R code after loading it with:
@@ -95,8 +95,10 @@ The parameters are as follows:
 * endColumn: The last column index (or name) to read from.
 * firstRowAsColumnNames: If true then use the values of the first column as column names for the data.frame
 
-The resulting dataframe will read all values as character strings, so you will likely need to
-massage the data after the import to get what you want. e.g.
+_Return value_ A data.frame of Character vectors (strings).
+
+Since the resulting dataframe will return all values as character strings (except missing values which will be NA), 
+so you will likely need to massage the data after the import to get what you want. e.g.
 ```r
 excelDf$mpg <- as.numeric(sub(",", ".", excelDf$mpg))
 ```
@@ -177,3 +179,16 @@ Used to read and write Open Document Spreadsheets (Open Office / Libre Office Ca
 Built and tested with SODS version 1.2.2.
 
 
+# Version history
+
+1.2-SNAPSHOT
+- Changed from primitives to Object wrappers (int -> Integer etc.) so that we can correctly return
+NULL for missing values (which will be NA in the data.frame).
+
+1.1
+- Api change: modified the api so that we always start with filePath to make it more consistent.
+              renamed columnIndex function to as.columnIndex and similar for columnName.
+- Add support for exporting multiple data.frames   
+- Enhanced documentation
+
+1.0 Initial release           

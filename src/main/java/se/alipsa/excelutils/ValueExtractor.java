@@ -1,15 +1,14 @@
 package se.alipsa.excelutils;
 
-import java.time.LocalDateTime;
-
 /**
  * A ValueExtractor is a helper class that makes it easier to get values from a spreadsheet.
  */
 public abstract class ValueExtractor {
 
-   public double getDouble(Object val) {
+   public Double getDouble(Object val) {
       if (val == null) {
-         return 0;
+         //return 0;
+         return null;
       }
       if (val instanceof Double) {
          return (Double) val;
@@ -17,13 +16,15 @@ public abstract class ValueExtractor {
       try {
          return Double.parseDouble(val.toString());
       } catch (NumberFormatException e) {
-         return 0;
+         //return 0;
+         return null;
       }
    }
 
-   public int getInt(Object objVal) {
+   public Integer getInt(Object objVal) {
       if (objVal == null) {
-         return Integer.MIN_VALUE;
+         //return Integer.MIN_VALUE;
+         return null;
       }
       if (objVal instanceof Double) {
          return (int)(Math.round((Double) objVal));
@@ -36,7 +37,8 @@ public abstract class ValueExtractor {
 
    public Long getLong(Object objVal) {
       if (objVal == null) {
-         return Long.MIN_VALUE;
+         //return Long.MIN_VALUE;
+         return null;
       }
       if (objVal instanceof Double) {
          return (Math.round((Double) objVal));
@@ -74,9 +76,6 @@ public abstract class ValueExtractor {
    }
 
    public String getString(Object val) {
-      if (val instanceof LocalDateTime) {
-
-      }
-      return String.valueOf(val);
+      return val == null ? null : String.valueOf(val);
    }
 }
