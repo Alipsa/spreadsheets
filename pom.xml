@@ -7,7 +7,7 @@
 
   <groupId>se.alipsa</groupId>
   <artifactId>spreadsheets</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <packaging>jar</packaging>
 
   <!-- general information about your package -->
