@@ -56,7 +56,7 @@ colNum <- findColumnNumber("df.xlsx", "project-dashboard", 2, "carb")
 ```
 
 The return value of findColumnNumber is an Integer with the matching row index
-or 0 if no such cell was found.
+or -1 if no such cell was found.
 
 ### columnIndex and columnName: Get the index number for the corresponding column name and vice versa
 Sometimes it is more convenient to refer to the column by the name e.g. A for the first column, B for the second.
