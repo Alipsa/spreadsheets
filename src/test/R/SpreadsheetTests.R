@@ -75,6 +75,8 @@ importWithHeaderRow <- function(filePath) {
   assertThat(as.numeric(sub(",", ".", df$mpg)), equalTo(mtcars$mpg))
   G26 <- df$qsec[24]
   assertThat(G26, equalTo("15.41"))
+  K34 <- as.integer(df$carb[32])
+  assertThat(K34, equalTo("2"))
 }
 
 test.importWithHeaderRowExcel <- function() {
@@ -98,6 +100,7 @@ importNoHeaderRow <- function(filePath) {
   assertThat(nrow(df), equalTo(32))
   assertThat(ncol(df), equalTo(11))
   assertThat(as.numeric(df[,2]), equalTo(mtcars$cyl))
+  assertThat(as.integer(df[,11]), equalTo(mtcars$carb))
 }
 
 test.importNoHeaderRowExcel <- function() {
@@ -120,6 +123,7 @@ importWithHeaderNames <- function(filePath) {
   assertThat(nrow(df), equalTo(32))
   assertThat(ncol(df), equalTo(11))
   assertThat(as.numeric(df[,4]), equalTo(mtcars$hp))
+  assertThat(as.integer(df[,11]), equalTo(mtcars$carb))
 }
 
 test.importWithHeaderNamesExcel <- function() {
