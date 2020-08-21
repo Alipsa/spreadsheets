@@ -55,9 +55,21 @@ findColumnsSunny <- function(filePath) {
 
 test.findColumnsSunnyExcel <- function() {
   findColumnsSunny(wdfile("df.xlsx"))
+
+  colNum <- findColumnNumber("complex.xlsx", 1, 2, "96.748")
+  assertThat(colNum, equalTo(6L))
+
+  # This does not work: Named values does not work
+  #colNum <- findColumnNumber("complex.xlsx", 2, 3, "BEG")
+  #assertThat(colNum, equalTo(2L))
 }
+
+
 test.findColumnsSunnyOds <- function() {
   findColumnsSunny(wdfile("df.ods"))
+
+  colNum <- findColumnNumber("complex.ods", 1, 5, "96.019")
+  assertThat(colNum, equalTo(6L))
 }
 
 importWithHeaderRow <- function(filePath) {
