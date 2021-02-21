@@ -181,6 +181,9 @@ Built and tested with SODS version 1.2.2.
 
 # Version history
 
+1.3
+- close workbook properly when calling getSheetNames()
+
 1.2
 - Changed from primitives to Object wrappers (int -> Integer etc.) so that we can correctly return
 NULL for missing values (which will be NA in the data.frame).
