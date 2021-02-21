@@ -186,6 +186,7 @@ public class ExcelReader {
       for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
          names.add(workbook.getSheetAt(i).getSheetName());
       }
+      close();
       return new StringArrayVector(names);
    }
 }
