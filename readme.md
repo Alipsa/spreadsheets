@@ -183,6 +183,7 @@ Built and tested with SODS version 1.2.2.
 
 1.3
 - close workbook properly when calling getSheetNames()
+- upgrade SODS and poi versions
 
 1.2
 - Changed from primitives to Object wrappers (int -> Integer etc.) so that we can correctly return
