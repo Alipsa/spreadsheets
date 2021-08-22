@@ -9,7 +9,7 @@ To use it add the following dependency to your pom.xml:
 <dependency>
   <groupId>se.alipsa</groupId>
   <artifactId>spreadsheets</artifactId>
-  <version>1.3</version>
+  <version>1.3.1</version>
 </dependency>
 ```
 and use it your Renjin R code after loading it with:
@@ -181,8 +181,8 @@ Built and tested with SODS version 1.2.2.
 
 # Version history
 
-1.4
-(nothing yet)
+1.3.1
+- upgrade dependencies (notably SODS which in version 1.4 has a greatly reduced footprint)
 
 1.3
 - close workbook properly when calling getSheetNames()
