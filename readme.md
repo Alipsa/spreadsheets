@@ -160,7 +160,8 @@ There are more functions in the api than what is described above, see [Spreadshe
 Why not just use one of the existing packages such as xlsx, XLConnect, or gdata? 
 Sometimes I had problems with loading these packages, or some functions did not work (none of them fully passes 
 the tests on renjin cran).
-Also, I missed some search functionality to make imports more dynamic in my R code. 
+Also, I missed some search functionality to make imports more dynamic in my R code as well as the ability to handle 
+the OpenOffice format (readOds is not available in Renjin yet).
 As the gcc-bridge (which compiles C code to jvm byte code) gets better, the first kind of problem will disappear,
 but I needed something "now". This is a "Renjin native" package which attempts to address some of those issues.
 
@@ -172,11 +173,11 @@ I have tested with version 3.5-beta76 but there is no particular Renjin version 
 anything from version 0.9 and later should work.
 
 2. POI (https://poi.apache.org/)
-Used to read and write Excel files. Built and tested with poi version 4.1.2.
+Used to read and write Excel files. Built and tested with poi version 5.
 
 3. SODS (https://github.com/miachm/SODS)
 Used to read and write Open Document Spreadsheets (Open Office / Libre Office Calc files).
-Built and tested with SODS version 1.2.2.
+Built and tested with SODS version 1.4.
 
 
 # Version history
