@@ -12,7 +12,7 @@
 
   <!-- general information about your package -->
   <name>Spreadsheets</name>
-  <description>Various methods to read information from and write to spreadsheets in Renjin R. Supports xls, xlsx, and ods files</description>
+  <description>Read from and write to spreadsheets in Renjin R. Supports xls, xlsx, and ods files</description>
   <url>https://github.com/Alipsa/spreadsheets</url>
 
   <licenses>
