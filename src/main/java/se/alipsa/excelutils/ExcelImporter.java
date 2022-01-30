@@ -1,7 +1,8 @@
 package se.alipsa.excelutils;
 
 import org.apache.poi.ss.usermodel.*;
-import org.renjin.primitives.vector.RowNamesVector;
+import org.renjin.primitives.sequence.IntSequence;
+import org.renjin.primitives.vector.ConvertingStringVector;;
 import org.renjin.sexp.*;
 
 import java.io.File;
@@ -207,7 +208,7 @@ public class ExcelImporter {
          ListVector ci = (ListVector) columnVector.get(i);
          dfBuilder.add(ci.get("name").asString(), builders.get(i).build());
       }
-      dfBuilder.setAttribute("row.names", new RowNamesVector(numRows));
+      dfBuilder.setAttribute("row.names", new ConvertingStringVector(IntSequence.fromTo(1, numRows)));
       dfBuilder.setAttribute("class", StringVector.valueOf("data.frame"));
       return dfBuilder.build();
 

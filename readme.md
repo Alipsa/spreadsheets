@@ -181,23 +181,26 @@ Built and tested with SODS version 1.4.
 
 
 # Version history
+### 1.3.2
+- Change data.frame creation of row.names to be future-proof by replacing the RowNamesVector with a ConvertingStringVector
+- update poi, logging and some plugin versions
 
-1.3.1
+### 1.3.1
 - upgrade dependencies (notably SODS which in version 1.4 has a greatly reduced footprint)
 
-1.3
+### 1.3
 - close workbook properly when calling getSheetNames()
 - upgrade SODS and poi versions
 
-1.2
+### 1.2
 - Changed from primitives to Object wrappers (int -> Integer etc.) so that we can correctly return
 NULL for missing values (which will be NA in the data.frame).
 - Allow export to update existing file.
 
-1.1
+### 1.1
 - Api change: modified the api so that we always start with filePath to make it more consistent.
               renamed columnIndex function to as.columnIndex and similar for columnName.
 - Add support for exporting multiple data.frames   
 - Enhanced documentation
 
-1.0 Initial release           
+### 1.0 Initial release           
