@@ -1,9 +1,14 @@
 package se.alipsa.excelutils;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+
 /**
  * A ValueExtractor is a helper class that makes it easier to get values from a spreadsheet.
  */
 public abstract class ValueExtractor {
+
+   protected NumberFormat percentFormat = NumberFormat.getPercentInstance();
 
    public Double getDouble(Object val) {
       if (val == null) {
@@ -13,11 +18,36 @@ public abstract class ValueExtractor {
       if (val instanceof Double) {
          return (Double) val;
       }
+      String strVal = val.toString();
       try {
-         return Double.parseDouble(val.toString());
+         return Double.parseDouble(strVal);
       } catch (NumberFormatException e) {
+         try {
+            percentFormat.parse(strVal).doubleValue();
+         } catch (ParseException ignored) {
+            // do nothing
+         }
          //return 0;
          return null;
+      }
+   }
+
+   public Double getPercentage(Object val) {
+      if (val == null) {
+         return null;
+      }
+      if (val instanceof Double) {
+         return (Double) val;
+      }
+      String strVal = val.toString();
+      if (strVal.contains("%")) {
+         try {
+            return percentFormat.parse(strVal).doubleValue();
+         } catch (ParseException e) {
+            return null;
+         }
+      } else {
+         return Double.parseDouble(strVal);
       }
    }
 

@@ -191,7 +191,22 @@ public class OdsImporter {
          int i = 0;
          for (int colIdx = startColNum; colIdx <= endColNum; colIdx++) {
             //System.out.println("Adding ext.getString(" + rowIdx + ", " + colIdx+ ") = " + ext.getString(row, colIdx));
-            builders.get(i++).add(ext.getString(rowIdx, colIdx));
+            String val = ext.getString(rowIdx, colIdx);
+            if (val == null) {
+               builders.get(i++).addNA();
+            } else {
+               if (val.endsWith("%")) {
+                  // In excel there is no % in the end of percentage cell, so we make it the same
+                  // This has the unfortunate consequence that intentional columns ending with % will be changed
+                  try {
+                     double dblVal = Double.parseDouble(val.replace("%", "").replace(",", ".")) / 100;
+                     val = String.valueOf(dblVal);
+                  } catch (NumberFormatException ignored) {
+                     // it is not a percentage number, leave the value as it was
+                  }
+               }
+               builders.get(i++).add(val);
+            }
          }
       }
       ListVector columnVector = columnInfo(colNames);

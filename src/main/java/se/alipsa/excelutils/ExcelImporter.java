@@ -198,7 +198,13 @@ public class ExcelImporter {
          int i = 0;
          for (int colIdx = startColNum; colIdx <= endColNum; colIdx++) {
             //System.out.println("Adding ext.getString(" + rowIdx + ", " + colIdx+ ") = " + ext.getString(row, colIdx));
-            builders.get(i++).add(ext.getString(row, colIdx));
+            //builders.get(i++).add(ext.getString(row, colIdx));
+            String val = ext.getString(row, colIdx);
+            if (val == null) {
+               builders.get(i++).addNA();
+            } else {
+               builders.get(i++).add(val);
+            }
          }
       }
       ListVector columnVector = columnInfo(colNames);

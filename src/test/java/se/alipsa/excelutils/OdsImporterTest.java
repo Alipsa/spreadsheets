@@ -73,10 +73,10 @@ public class OdsImporterTest {
       ListVector vec = OdsImporter.importOds(
          "complex.ods",
          1,
-         1,
-         7,
-         "A",
-         "F",
+         2,
+         8,
+         "B",
+         "J",
          true
       );
       int row = 2;
@@ -91,6 +91,8 @@ public class OdsImporterTest {
       assertEquals("5.222", vec.getElementAsVector("decimal").getElementAsString(row));
       assertEquals("three", vec.getElementAsVector("string").getElementAsString(row));
       assertEquals("96.778", vec.getElementAsVector("Numdiff").getElementAsString(row));
+      String percent = vec.getElementAsVector("fractions").getElementAsString(row).replace("%", "");
+      assertEquals(0.0512, Double.parseDouble(percent), 0.00001);
    }
 
    public static List<String> toHeaderList(ListVector df) {

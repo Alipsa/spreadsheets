@@ -89,10 +89,10 @@ public class ExcelImporterTest {
       ListVector vec = ExcelImporter.importExcel(
          "complex.xlsx",
          1,
-         1,
-         7,
-         "A",
-         "F",
+         2,
+         8,
+         "B",
+         "J",
          true
       );
       int row = 2;
@@ -106,5 +106,7 @@ public class ExcelImporterTest {
       assertEquals("5.222", vec.getElementAsVector("decimal").getElementAsString(row));
       assertEquals("three", vec.getElementAsVector("string").getElementAsString(row));
       assertEquals("96.778", vec.getElementAsVector("Numdiff").getElementAsString(row));
+      System.out.println(vec.getElementAsVector("fractions").getElementAsString(row));
+      assertEquals(0.0512, vec.getElementAsVector("fractions").getElementAsDouble(row), 0.00001);
    }
 }

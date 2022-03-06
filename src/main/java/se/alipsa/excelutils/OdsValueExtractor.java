@@ -50,7 +50,7 @@ public class OdsValueExtractor  extends ValueExtractor {
       if (val instanceof LocalDate) {
          return SpreadsheetUtil.dateTimeFormatter.format(((LocalDate) val).atStartOfDay());
       }
-      return String.valueOf(val);
+      return val == null ? null : String.valueOf(val);
    }
 
    public Long getLong(Range range) {

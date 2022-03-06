@@ -56,8 +56,8 @@ findColumnsSunny <- function(filePath) {
 test.findColumnsSunnyExcel <- function() {
   findColumnsSunny(wdfile("df.xlsx"))
 
-  colNum <- findColumnNumber("complex.xlsx", 1, 2, "96.748")
-  assertThat(colNum, equalTo(6L))
+  colNum <- findColumnNumber("complex.xlsx", 1, 3, "96.748")
+  assertThat(colNum, equalTo(7L))
 
   # This does not work: Named values does not work
   #colNum <- findColumnNumber("complex.xlsx", 2, 3, "BEG")
@@ -68,8 +68,8 @@ test.findColumnsSunnyExcel <- function() {
 test.findColumnsSunnyOds <- function() {
   findColumnsSunny(wdfile("df.ods"))
 
-  colNum <- findColumnNumber("complex.ods", 1, 5, "96.019")
-  assertThat(colNum, equalTo(6L))
+  colNum <- findColumnNumber("complex.ods", 1, 6, "96.019")
+  assertThat(colNum, equalTo(7L))
 }
 
 importWithHeaderRow <- function(filePath) {
@@ -149,12 +149,13 @@ importComplex <- function(filePath) {
   df <- importSpreadsheet(
     filePath = filePath,
     sheet = 1,
-    startRow = 1,
-    endRow = 7,
-    startColumn = "A",
-    endColumn = "F",
+    startRow = 2,
+    endRow = 8,
+    startColumn = "B",
+    endColumn = "J",
     firstRowAsColumnNames = TRUE
   )
+  assertThat(names(df), equalTo(c("date", "datetime", "integer", "decimal",	"string", "Numdiff", "Start", "Date Accepted", "fractions")))
   date <- as.Date(as.POSIXlt(df[3,1]))
   assertThat(date, equalTo(as.Date("2020-05-03")))
   assertThat(as.character(as.POSIXlt(df[3,2])), equalTo("2020-05-03 15:43:12"))
