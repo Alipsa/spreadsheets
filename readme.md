@@ -9,7 +9,7 @@ To use it add the following dependency to your pom.xml:
 <dependency>
   <groupId>se.alipsa</groupId>
   <artifactId>spreadsheets</artifactId>
-  <version>1.3.2</version>
+  <version>1.3.3</version>
 </dependency>
 ```
 and use it your Renjin R code after loading it with:
@@ -181,6 +181,9 @@ Built and tested with SODS version 1.4.
 
 
 # Version history
+
+### 1.3.4
+
 ### 1.3.3, Feb 6, 2022
 - make ods import behave similar to excel when importing percentages (i.e import it as a decimal e.g. 0.54 instead of 54%)
 - improve test: check that column headers are imported correctly
