@@ -181,6 +181,11 @@ Built and tested with SODS version 1.4.
 
 
 # Version history
+### 1.3.3
+- make ods import behave similar to excel when importing percentages (i.e import it as a decimal e.g. 0.54 instead of 54%)
+- improve test: check that column headers are imported correctly
+- upgrade poi and slf4j
+
 ### 1.3.2, Jan 30, 2022
 - Change data.frame creation of row.names to be future-proof by replacing the RowNamesVector with a ConvertingStringVector
 - update poi, logging and some plugin versions
