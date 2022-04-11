@@ -168,6 +168,66 @@ importOds <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn = 1
   }
 }
 
+# Example usage
+# sheets <- importSpreadsheets(
+#     filePath=paste0(getwd(), "/results.xslx"),
+#     sheets = c("Sheet1","Sheet2","Sheet3"),
+#     importAreas = list(
+#         "Sheet1"=c(1, 1212, 1, 17),
+#         "Sheet2"=c(5,123,2,10),
+#         "Sheet3"=c(1,345, 2, 34)
+#     ), firstRowAsColumnNames = list(
+#         "Sheet1"=FALSE,
+#         "Sheet2"=TRUE,
+#         "Sheet3"=TRUE
+#     )
+# )
+# sheet2 <- sheets[["sheet2"]]
+importSpreadsheets <- function(filePath, sheets, importAreas, firstRowAsColumnNames) {
+  printUsage <- function() {
+    print(paste("Example usage",
+      "sheets <- importSpreadsheets(",
+                "    filePath=paste0(getwd(), '/results.xslx'),",
+                "    sheets = c('Sheet1', 'Sheet2', 'Sheet3'),",
+                "    importAreas = list(",
+                "        'Sheet1' = c(1, 1212, 1, 17),",
+                "        'Sheet2' = c(5, 123, 2, 10),",
+                "        'Sheet3' = c(1, 345, 2, 34)",
+                "    ),",
+                "    firstRowAsColumnNames = list(",
+                "        'Sheet1' = FALSE,",
+                "        'Sheet2' = TRUE,",
+                "        'Sheet3' = TRUE",
+                "    )",
+                ")", sep="\n"))
+  }
+  if (!file.exists(filePath)) {
+    printUsage()
+    stop(paste0("filePath (", filePath, ") does not exist"))
+  }
+  if (!(is.list(sheets) | is.vector(sheets))) {
+    printUsage()
+    stop("sheets must be a vector or a list")
+  }
+  if (!is.list(importAreas)) {
+    printUsage()
+    stop("importAreas must be a list of vectors")
+  }
+  if (!is.list(firstRowAsColumnNames)) {
+    printUsage()
+    stop("firstRowAsColumnNames must be a list of name / logical values pairs")
+  }
+
+  if (endsWith(tolower(filePath), ".ods")) {
+    return(importOds(filePath = filePath, sheet = sheet, startRow = startRow, endRow = endRow, startColumn = startColumn,
+                     endColumn = endColumn, firstRowAsColumnNames = firstRowAsColumnNames, columnNames = columnNames))
+  } else {
+    return(importExcel(filePath = filePath, sheet = sheet, startRow = startRow, endRow = endRow, startColumn = startColumn,
+                       endColumn = endColumn, firstRowAsColumnNames = firstRowAsColumnNames, columnNames = columnNames))
+  }
+}
+
+
 exportSpreadsheet <- function(filePath, df, sheet = NA) {
   if (!dir.exists(dirname(filePath))) {
     stop(paste(dirname(filePath), "does not exists, create it first before exporting a file there!"))

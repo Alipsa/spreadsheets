@@ -172,6 +172,37 @@ public class ExcelImporter {
 
    }
 
+   public static Vector importExcelSheets(String filePath, Vector sheetNames, ListVector importAreas, Vector firstRowAsColumnNames) throws Exception {
+      File excelFile = checkFilePath(filePath);
+      ListVector.Builder result = new ListVector.Builder();
+      try (Workbook workbook = WorkbookFactory.create(excelFile)) {
+         for (int sheetNameIdx = 0; sheetNameIdx < sheetNames.length(); sheetNameIdx++) {
+            String sheetName = sheetNames.getElementAsString(sheetNameIdx);
+            Sheet sheet = workbook.getSheet(sheetName);
+            List<String> header = new ArrayList<>();
+
+            ListVector ranges = importAreas.getElementAsList(sheetName);
+            int startRowNum = ranges.getElementAsInt(0);
+            int endRowNum = ranges.getElementAsInt(1);
+            int startColNum = ranges.getElementAsInt(2);
+            int endColNum = ranges.getElementAsInt(3);
+
+            if (firstRowAsColumnNames.getElementAsLogical(sheetNameIdx).toBooleanStrict()) {
+               buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
+               startRowNum = startRowNum + 1;
+            } else {
+               for (int i = 0; i <= endColNum - startColNum; i++) {
+                  header.add(String.valueOf(i + 1));
+               }
+            }
+            //System.out.println("Header size is " + header.size() + "; " + header);
+            result.add(importExcel(sheet, startRowNum, endRowNum, startColNum, endColNum, header));
+         }
+      }
+      result.setAttribute("names", sheetNames);
+      return result.build();
+   }
+
    private static void buildHeaderRow(int startRowNum, int startColNum, int endColNum, List<String> header, Sheet sheet) {
       startRowNum--;
       startColNum--;
