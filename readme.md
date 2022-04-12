@@ -12,7 +12,9 @@ To use it add the following dependency to your pom.xml:
   <version>1.3.4</version>
 </dependency>
 ```
-and use it your Renjin R code after loading it with:
+(Note that version 1.3.4 and later requires java 11)
+
+...and use it your Renjin R code after loading it with:
 ```r
 library("se.alipsa:spreadsheets")
 ```
@@ -156,7 +158,7 @@ See import importSpreadsheet for notes about values conversion.
 
 ### exportSpreadsheet: export an excel or Open Office spreadsheet
 
-To export to a new spread sheet use
+To export to a new spreadsheet use
 ```r
 exportSpreadsheet(filePath, df)
 ```
@@ -216,7 +218,9 @@ Built and tested with SODS version 1.4.
 # Version history
 
 ### 1.3.4
-- add support for import of multiple sheets at once
+- Add support for import of multiple sheets at once
+- Upgrade to java 11
+- Upgrade apache poi dependencies
 
 ### 1.3.3, Feb 6, 2022
 - make ods import behave similar to excel when importing percentages (i.e import it as a decimal e.g. 0.54 instead of 54%)
