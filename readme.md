@@ -9,10 +9,12 @@ To use it add the following dependency to your pom.xml:
 <dependency>
   <groupId>se.alipsa</groupId>
   <artifactId>spreadsheets</artifactId>
-  <version>1.3.3</version>
+  <version>1.3.4</version>
 </dependency>
 ```
-and use it your Renjin R code after loading it with:
+(Note that version 1.3.4 and later requires java 11)
+
+...and use it your Renjin R code after loading it with:
 ```r
 library("se.alipsa:spreadsheets")
 ```
@@ -121,9 +123,42 @@ timeMeasuresDf <- importSpreadsheet(
 timeMeasuresDf$startDate <- as.Date(as.POSIXlt(timeMeasuresDf$startDate))
 ```
 
+### importSpreadsheets: import several Excel or Open Office spreadsheets at once
+Reads the content of the spreadsheets and return a named list of data.frame's
+```r
+sheets <- importSpreadsheets(
+  filePath=paste0(getwd(), "/mySpreadseet.ods"),
+  sheets = c('mtcars', 'iris', 'PlantGrowth'),
+  importAreas = list(
+    'mtcars' = c(1, 33, 1, 11),
+    'iris' = c(2, 152, 1, 5),
+    'PlantGrowth' = c(3, 32, 2, 3)
+  ),
+  firstRowAsColumnNames = list(
+    'mtcars' = TRUE,
+    'iris' = TRUE,
+    'PlantGrowth' = FALSE
+  )
+)
+  
+irisDf <- sheets$iris 
+```
+The parameters are as follows:
+* _filePath_ the full path or relative path to the Excel file
+* _sheetNames_ a vector of sheet names e.g. `c('sheet1', 'sheet2')`
+* _importAreas_ a named list of numeric vectors containing start row, end row, start column, end column e.g.
+  `list('sheet1' = c(1, 33, 1, 11), 'sheet2' = c(2, 152, 1, 5))`
+* _firstRowAsColumnNames_ a named vector of logical values for whether the first row should be used as 
+  column names for the dataframe in the sheet or not.
+  E.g. `list('sheet1' = TRUE, 'sheet2' = FALSE)`
+
+_Return value_ a named vector of data.frame's (ListVectors) corresponding to the imported sheets
+
+See import importSpreadsheet for notes about values conversion.
+
 ### exportSpreadsheet: export an excel or Open Office spreadsheet
 
-To export to a new spread sheet use
+To export to a new spreadsheet use
 ```r
 exportSpreadsheet(filePath, df)
 ```
@@ -183,6 +218,9 @@ Built and tested with SODS version 1.4.
 # Version history
 
 ### 1.3.4
+- Add support for import of multiple sheets at once
+- Upgrade to java 11
+- Upgrade apache poi dependencies
 
 ### 1.3.3, Feb 6, 2022
 - make ods import behave similar to excel when importing percentages (i.e import it as a decimal e.g. 0.54 instead of 54%)
