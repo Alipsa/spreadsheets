@@ -217,7 +217,7 @@ Built and tested with SODS version 1.4.
 
 # Version history
 
-### 1.3.4
+### 1.3.4, Apr 12, 2022
 - Add support for import of multiple sheets at once
 - Upgrade to java 11
 - Upgrade apache poi dependencies
