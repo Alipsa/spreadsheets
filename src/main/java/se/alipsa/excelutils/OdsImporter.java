@@ -156,15 +156,62 @@ public class OdsImporter {
     * @throws Exception of the file cannot be read or som other issue occurs.
     */
    public static ListVector importOds(String filePath, int sheetNum, int startRowNum, int endRowNum, int startColNum, int endColNum, Vector colNames) throws Exception {
-      File excelFile = checkFilePath(filePath);
+      File odsFile = checkFilePath(filePath);
       List<String> header = new ArrayList<>();
       for (int i = 0; i < colNames.length(); i++) {
          header.add(colNames.getElementAsString(i));
       }
-      SpreadSheet spreadSheet = new SpreadSheet(excelFile);
+      SpreadSheet spreadSheet = new SpreadSheet(odsFile);
       Sheet sheet = spreadSheet.getSheet(sheetNum - 1);
       return importOds(sheet, startRowNum, endRowNum, startColNum, endColNum, header);
 
+   }
+
+   /**
+    *
+    * @param filePath the full path or relative path to the Calc file
+    * @param sheetNames a vector of sheet names e.g. c('sheet1', 'sheet2')
+    * @param importAreas a named list of numeric vectors containing start row, end row, start column, end column e.g.
+    *                    list('sheet1' = c(1, 33, 1, 11), 'sheet2' = c(2, 152, 1, 5))
+    * @param firstRowAsColumnNames a named vector of logical values for whether the first row should be used as
+    *                              column names for the dataframe in the sheet or not.
+    *                              E.g. list('sheet1' = TRUE, 'sheet2' = FALSE)
+    * @return a named vector of data.frame (ListVectors) corresponding to the imported sheets
+    * @throws Exception if the file cannot be read or som other issue occurs.
+    */
+   public static Vector importOdsSheets(String filePath, Vector sheetNames, ListVector importAreas, Vector firstRowAsColumnNames) throws Exception {
+      File odsFile = checkFilePath(filePath);
+      ListVector.Builder result = new ListVector.Builder();
+      SpreadSheet spreadSheet = new SpreadSheet(odsFile);
+
+      for (int sheetNameIdx = 0; sheetNameIdx < sheetNames.length(); sheetNameIdx++) {
+         String sheetName = sheetNames.getElementAsString(sheetNameIdx);
+         //System.out.println("Reading sheet " + sheetName);
+         Sheet sheet = spreadSheet.getSheet(sheetName);
+         List<String> header = new ArrayList<>();
+
+         //System.out.println("Assigning ranges");
+         DoubleArrayVector ranges = (DoubleArrayVector) importAreas.getElementAsVector(sheetName);
+         int startRowNum = ranges.getElementAsInt(0);
+         int endRowNum = ranges.getElementAsInt(1);
+         int startColNum = ranges.getElementAsInt(2);
+         int endColNum = ranges.getElementAsInt(3);
+
+         //System.out.println("Creating header");
+         if (firstRowAsColumnNames.getElementAsLogical(sheetNameIdx).toBooleanStrict()) {
+            buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
+            startRowNum = startRowNum + 1;
+         } else {
+            for (int i = 0; i <= endColNum - startColNum; i++) {
+               header.add(String.valueOf(i + 1));
+            }
+         }
+         //System.out.println("Header size is " + header.size() + "; " + header);
+         result.add(importOds(sheet, startRowNum, endRowNum, startColNum, endColNum, header));
+      }
+
+      result.setAttribute("names", sheetNames);
+      return result.build();
    }
 
    private static void buildHeaderRow(int startRowNum, int startColNum, int endColNum, List<String> header, Sheet sheet) {

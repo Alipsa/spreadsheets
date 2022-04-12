@@ -2,7 +2,7 @@ package se.alipsa.excelutils;
 
 import org.apache.poi.ss.usermodel.*;
 import org.renjin.primitives.sequence.IntSequence;
-import org.renjin.primitives.vector.ConvertingStringVector;;
+import org.renjin.primitives.vector.ConvertingStringVector;
 import org.renjin.sexp.*;
 
 import java.io.File;
@@ -149,7 +149,7 @@ public class ExcelImporter {
 
    /**
     *
-    * @param filePath the full path or relative path to the Calc file
+    * @param filePath the full path or relative path to the Excel file
     * @param sheetNum the number of the sheet (1 indexed) to read
     * @param startRowNum the starting row number (1 indexed)
     * @param endRowNum the ending row number (1 indexed)
@@ -157,7 +157,7 @@ public class ExcelImporter {
     * @param endColNum the ending column number (1 indexed)
     * @param colNames a Vector of column names to use as header
     * @return a data.frame of string characters with the values in the range specified
-    * @throws Exception of the file cannot be read or som other issue occurs.
+    * @throws Exception if the file cannot be read or som other issue occurs.
     */
    public static ListVector importExcel(String filePath, int sheetNum, int startRowNum, int endRowNum,int startColNum, int endColNum, Vector colNames) throws Exception {
       File excelFile = checkFilePath(filePath);
@@ -172,21 +172,36 @@ public class ExcelImporter {
 
    }
 
+   /**
+    *
+    * @param filePath the full path or relative path to the Excel file
+    * @param sheetNames a vector of sheet names e.g. c('sheet1', 'sheet2')
+    * @param importAreas a named list of numeric vectors containing start row, end row, start column, end column e.g.
+    *                    list('sheet1' = c(1, 33, 1, 11), 'sheet2' = c(2, 152, 1, 5))
+    * @param firstRowAsColumnNames a named vector of logical values for whether the first row should be used as
+    *                              column names for the dataframe in the sheet or not.
+    *                              E.g. list('sheet1' = TRUE, 'sheet2' = FALSE)
+    * @return a named vector of data.frame (ListVectors) corresponding to the imported sheets
+    * @throws Exception if the file cannot be read or som other issue occurs.
+    */
    public static Vector importExcelSheets(String filePath, Vector sheetNames, ListVector importAreas, Vector firstRowAsColumnNames) throws Exception {
       File excelFile = checkFilePath(filePath);
       ListVector.Builder result = new ListVector.Builder();
       try (Workbook workbook = WorkbookFactory.create(excelFile)) {
          for (int sheetNameIdx = 0; sheetNameIdx < sheetNames.length(); sheetNameIdx++) {
             String sheetName = sheetNames.getElementAsString(sheetNameIdx);
+            //System.out.println("Reading sheet " + sheetName);
             Sheet sheet = workbook.getSheet(sheetName);
             List<String> header = new ArrayList<>();
 
-            ListVector ranges = importAreas.getElementAsList(sheetName);
+            //System.out.println("Assigning ranges");
+            DoubleArrayVector ranges = (DoubleArrayVector) importAreas.getElementAsVector(sheetName);
             int startRowNum = ranges.getElementAsInt(0);
             int endRowNum = ranges.getElementAsInt(1);
             int startColNum = ranges.getElementAsInt(2);
             int endColNum = ranges.getElementAsInt(3);
 
+            //System.out.println("Creating header");
             if (firstRowAsColumnNames.getElementAsLogical(sheetNameIdx).toBooleanStrict()) {
                buildHeaderRow(startRowNum, startColNum, endColNum, header, sheet);
                startRowNum = startRowNum + 1;
@@ -214,7 +229,7 @@ public class ExcelImporter {
       }
    }
 
-   private static ListVector importExcel(Sheet sheet, int startRowNum, int endRowNum, int startColNum, int endColNum, List<String> colNames) throws Exception {
+   private static ListVector importExcel(Sheet sheet, int startRowNum, int endRowNum, int startColNum, int endColNum, List<String> colNames) {
       startRowNum--;
       endRowNum--;
       startColNum--;

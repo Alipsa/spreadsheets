@@ -185,7 +185,7 @@ importOds <- function(filePath, sheet = 1, startRow = 1, endRow, startColumn = 1
 # sheet2 <- sheets[["sheet2"]]
 importSpreadsheets <- function(filePath, sheets, importAreas, firstRowAsColumnNames) {
   printUsage <- function() {
-    print(paste("Example usage",
+    cat(paste("Example usage",
       "sheets <- importSpreadsheets(",
                 "    filePath=paste0(getwd(), '/results.xslx'),",
                 "    sheets = c('Sheet1', 'Sheet2', 'Sheet3'),",
@@ -209,21 +209,43 @@ importSpreadsheets <- function(filePath, sheets, importAreas, firstRowAsColumnNa
     printUsage()
     stop("sheets must be a vector or a list")
   }
+  if (!is.character(sheets)) {
+    printUsage()
+    stop("sheets must be character vector or list")
+  }
   if (!is.list(importAreas)) {
     printUsage()
-    stop("importAreas must be a list of vectors")
+    stop("importAreas must be a list of named vectors")
+  }
+  for (i in 1:length(importAreas) ) {
+    if (!is.vector(importAreas[[i]], mode = "numeric")) {
+      printUsage()
+      stop("non numeric vector detected in importAreas")
+    }
+    if (length(importAreas[[i]]) != 4) {
+      printUsage()
+      stop(paste0("numeric vector for index ", i, " (", names(importAreas)[i], ") is not of length 4"))
+    }
   }
   if (!is.list(firstRowAsColumnNames)) {
     printUsage()
     stop("firstRowAsColumnNames must be a list of name / logical values pairs")
   }
 
-  if (endsWith(tolower(filePath), ".ods")) {
-    return(importOds(filePath = filePath, sheet = sheet, startRow = startRow, endRow = endRow, startColumn = startColumn,
-                     endColumn = endColumn, firstRowAsColumnNames = firstRowAsColumnNames, columnNames = columnNames))
+  if (!all(sapply(firstRowAsColumnNames, is.logical))) {
+    printUsage()
+    stop("firstRowAsColumnNames non logical value detected in the named list")
+  }
+
+  if(!all.equal(sheets, names(importAreas), names(firstRowAsColumnNames))) {
+    printUsage()
+    stop("sheet names, names(importAreas) and names(firstRowAsColumnNames) does not match")
+  }
+
+  if (endsWith(tolower(filePath),".ods")) {
+    return(OdsImporter$importOdsSheets(filePath, sheets, importAreas, firstRowAsColumnNames))
   } else {
-    return(importExcel(filePath = filePath, sheet = sheet, startRow = startRow, endRow = endRow, startColumn = startColumn,
-                       endColumn = endColumn, firstRowAsColumnNames = firstRowAsColumnNames, columnNames = columnNames))
+    return(ExcelImporter$importExcelSheets(filePath, sheets, importAreas, firstRowAsColumnNames))
   }
 }
 

@@ -5,6 +5,28 @@ wdfile <- function(filePath) {
   paste0(getwd(), "/", filePath)
 }
 
+compareDf <- function(actual, expected, context) {
+  if (nrow(expected) != nrow(actual)) {
+    stop(paste(context, ", number of rows differ, expected", nrow(expected), "but was", nrow(actual)))
+  }
+  if (ncol(expected) != ncol(actual)) {
+    stop(paste(context, ", number of columns differ, expected", ncol(expected), "but was", ncol(actual)))
+  }
+  for (col in 1:ncol(expected)) {
+    for(row in 1:nrow(expected)) {
+      expVal <- expected[[row, col]]
+      actVal <- actual[[row, col]]
+      if (is.numeric(expVal)) {
+        if (abs(expVal - as.numeric(actVal)) > 1e-5) {
+          stop(paste0(context, ", data.frame numeric values differ in row ", row, ", col ", col, "; expected ", expVal, " (", typeof(expVal), ") but was ", actVal, " (", typeof(actVal), ")" ))
+        }
+      } else if (expVal != actVal) {
+        stop(paste0(context, ", data.frame values differ in row ", row, ", col ", col, "; expected ", expVal, " (", typeof(expVal), ") but was ", actVal, " (", typeof(actVal), ")" ))
+      }
+    }
+  }
+}
+
 findRowNumSunnyTest <- function(filePath) {
   rowNum <- findRowNumber(filePath = filePath, sheet = 1, column = 1, "Iris")
   assertThat(rowNum, equalTo(36))
@@ -181,6 +203,77 @@ test.columnNameConversions <- function() {
   assertThat(as.columnName(14), equalTo("N"))
   assertThat(as.columnName(32), equalTo("AF"))
   assertThat(as.columnName(704), equalTo("AAB"))
+}
+
+importMultipleSheets <- function(fileName) {
+  sheets <- importSpreadsheets(
+    filePath=wdfile(fileName),
+    sheets = c('mtcars', 'iris', 'PlantGrowth'),
+    importAreas = list(
+      'mtcars' = c(1, 33, 1, 11),
+      'iris' = c(2, 152, 1, 5),
+      'PlantGrowth' = c(3, 32, 2, 3)
+    ),
+    firstRowAsColumnNames = list(
+      'mtcars' = TRUE,
+      'iris' = TRUE,
+      'PlantGrowth' = FALSE
+    )
+  )
+  assertThat(dim(sheets$mtcars), equalTo(c(32, 11)))
+  assertThat(dim(sheets$iris), equalTo(c(150, 5)))
+  assertThat(dim(sheets$PlantGrowth), equalTo(c(30, 2)))
+  compareDf(sheets$mtcar, mtcars, "mtcars sheet")
+  compareDf(sheets$iris, iris, "iris sheet")
+  compareDf(sheets$PlantGrowth, PlantGrowth, "PlantGrowth sheet")
+}
+
+test.importMultipleSheets.excel <- function() {
+  importMultipleSheets('multiSheets.xlsx')
+}
+
+test.importMultipleSheets.calc <- function() {
+  importMultipleSheets('multiSheets.ods')
+}
+
+test.importMultipleSheets.rainy <- function() {
+  # wrong name of one sheet
+  assertThat(
+    importSpreadsheets(
+        filePath=wdfile(fileName),
+        sheets = c('sheet1', 'iris', 'PlantGrowth'),
+        importAreas = list(
+          'mtcars' = c(1, 33, 1, 11),
+          'iris' = c(2, 152, 1, 5),
+          'PlantGrowth' = c(3, 32, 2, 3)
+        ),
+        firstRowAsColumnNames = list(
+          'mtcars' = TRUE,
+          'iris' = TRUE,
+          'PlantGrowth' = FALSE
+        )
+      ),
+      throwsError()
+  )
+
+  # wrong size of one importArea
+  assertThat(
+      importSpreadsheets(
+          filePath=wdfile(fileName),
+          sheets = c('mtcars', 'iris', 'PlantGrowth'),
+          importAreas = list(
+            'mtcars' = c(1, 33, 1, 11),
+            'iris' = c(2, 152, 1, 5),
+            'PlantGrowth' = c(3, 32, 2)
+          ),
+          firstRowAsColumnNames = list(
+            'mtcars' = TRUE,
+            'iris' = TRUE,
+            'PlantGrowth' = FALSE
+          )
+        ),
+        throwsError()
+    )
 }
 
 exportNew <- function(filePath) {
